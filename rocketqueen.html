@@ -198,10 +198,6 @@
       <div class="stat-lbl">Сегодня</div>
     </div>
     <div class="stat-card">
-      <div class="stat-val green" id="sOnl">0</div>
-      <div class="stat-lbl">Онлайн</div>
-    </div>
-    <div class="stat-card">
       <div class="stat-val" id="sWr">0%</div>
       <div class="stat-lbl">Винрейт</div>
     </div>
@@ -249,9 +245,7 @@
 
   function init(){
     document.getElementById('sEarn').textContent='$'+ri(9000,16000).toLocaleString();
-    document.getElementById('sOnl').textContent=ri(800,2800).toLocaleString();
     document.getElementById('sWr').textContent=ri(86,95)+'%';
-    setInterval(()=>{let e=document.getElementById('sOnl'),v=parseInt(e.textContent.replace(/,/g,''));e.textContent=(v+ri(-10,15)).toLocaleString();},5000);
     setInterval(()=>{let e=document.getElementById('sEarn'),v=parseInt(e.textContent.replace(/[$,]/g,''));e.textContent='$'+(v+ri(15,90)).toLocaleString();},3000);
     const h=document.getElementById('hist');
     for(let i=0;i<15;i++){const c=gc(),d=document.createElement('div');d.className='h-chip'+(c>=5?' mega':c>=2.5?' high':'');d.textContent=c.toFixed(2)+'x';h.appendChild(d);}
@@ -270,7 +264,7 @@
   function getSignal(){
     if(active)return;
     const btn=document.getElementById('btnGo'),co=document.getElementById('coeff'),ht=document.getElementById('hint'),cf=document.getElementById('cFill'),cp=document.getElementById('cPct'),rb=document.getElementById('resBlock');
-    btn.classList.add('loading');btn.disabled=true;co.classList.remove('visible');rb.classList.remove('visible'); //bb
+    btn.classList.add('loading');btn.disabled=true;co.classList.remove('visible');rb.classList.remove('visible');
     setTimeout(()=>{
       const c=gc(),conf=ri(78,96);
       co.textContent='x'+c.toFixed(2);co.classList.add('visible');
@@ -293,7 +287,7 @@
     document.getElementById('strCnt').textContent=streak;
     const sd=document.getElementById('strDots');sd.innerHTML='';
     results.slice(-8).forEach(x=>{const d=document.createElement('div');d.className='s-dot '+(x?'w':'l');sd.appendChild(d);});
-    document.getElementById('hint').innerHTML=w?'🎉 <strong>Отлично!</strong> Серия: '+streak:'💡 Удвой ставку (x2) для покрытия'; //double
+    document.getElementById('hint').innerHTML=w?'🎉 <strong>Отлично!</strong> Серия: '+streak:'💡 Удвой ставку (x2) для покрытия';
   }
 
   init();
