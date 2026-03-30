@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru"> 
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -466,7 +466,7 @@
 <script>
   const URLS = { luckyjet:'luckyjet.html', rocketqueen:'rocketqueen.html', mines:'mines.html' };
   const GAMES = [
-    { label:'Lucky Jet',   emoji:'🚀', ava:'fj',  tag:'tlj'  }, //luckyjet
+    { label:'Lucky Jet',   emoji:'🚀', ava:'fj',  tag:'tlj'  },
     { label:'Rocket Queen', emoji:'👸', ava:'frq', tag:'trq'  },
     { label:'Mines',        emoji:'💎', ava:'fmn', tag:'tmn'  },
   ];
@@ -483,11 +483,10 @@
     return n.slice(0, 2) + '•••' + n.slice(-1);
   }
   function genName() { return mask(NAMES[ri(0, NAMES.length-1)]); }
-  function fmtTime(m) { return m < 1 ? 'только что' : m + ' мин. назад'; } //bb
+  function fmtTime(m) { return m < 1 ? 'только что' : m + ' мин. назад'; }
 
   function go(g) {
-    if (window.Telegram?.WebApp) window.Telegram.WebApp.openLink(URLS[g]);
-    else window.location.href = URLS[g];
+    window.location.href = URLS[g];
   }
 
   // Stats — realistic slow ticks
