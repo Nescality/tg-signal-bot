@@ -46,84 +46,44 @@
     padding: 20px 16px 40px;
   }
 
-  .header {
-    display: flex; align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
-  .logo {
-    font-size: 22px; font-weight: 900;
-    background: linear-gradient(135deg, var(--accent), var(--pink));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .logo { font-size: 22px; font-weight: 900; background: linear-gradient(135deg, var(--accent), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  
   .badge-live {
     display: flex; align-items: center; gap: 6px;
     background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.25);
     border-radius: 20px; padding: 5px 14px;
     font-size: 12px; font-weight: 600; color: var(--green);
   }
-  .badge-live::before {
-    content: ''; width: 7px; height: 7px;
-    background: var(--green); border-radius: 50%;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
-    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
-  }
+  .badge-live::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.5); } 50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,197,94,0); } }
 
-  /* Stats */
   .stats-ticker {
-    background: var(--surface);
-    border: 1px solid rgba(245,158,11,0.15);
-    border-radius: 14px;
-    padding: 14px 18px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
+    background: var(--surface); border: 1px solid rgba(245,158,11,0.15);
+    border-radius: 14px; padding: 14px 18px; margin-bottom: 20px;
+    display: flex; justify-content: space-between; gap: 12px;
   }
   .stat-item { text-align: center; flex: 1; }
   .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--green); }
   .stat-label { font-size: 11px; color: var(--text-dim); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  /* History bar */
-  .history-bar {
-    display: flex; gap: 6px; margin-bottom: 24px; overflow-x: auto;
-    padding-bottom: 4px; scrollbar-width: none; min-height: 28px;
-  }
+  .history-bar { display: flex; gap: 6px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; min-height: 28px; }
   .history-bar::-webkit-scrollbar { display: none; }
-  .history-chip {
-    flex-shrink: 0; padding: 5px 10px; border-radius: 8px;
-    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
-    background: var(--surface2); color: var(--text-dim); border: 1px solid transparent;
-  }
+  .history-chip { flex-shrink: 0; padding: 5px 10px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; background: var(--surface2); color: var(--text-dim); border: 1px solid transparent; }
   .history-chip.high { background: rgba(245,158,11,0.2); color: var(--accent-glow); border-color: rgba(245,158,11,0.3); }
   .history-chip.mega { background: rgba(236,72,153,0.15); color: var(--pink); border-color: rgba(236,72,153,0.3); }
 
-  /* Signal card */
   .signal-card {
-    background: var(--surface);
-    border: 1px solid rgba(245,158,11,0.2);
-    border-radius: 20px; padding: 28px 24px;
-    text-align: center; margin-bottom: 20px;
+    background: var(--surface); border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 20px; padding: 28px 24px; text-align: center; margin-bottom: 20px;
     position: relative; overflow: hidden;
   }
-  .signal-card::before {
-    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-    background: conic-gradient(from 0deg, transparent 0deg, rgba(245,158,11,0.08) 60deg, transparent 120deg);
-    animation: rotate-bg 8s linear infinite; pointer-events: none;
-  }
+  .signal-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent 0deg, rgba(245,158,11,0.08) 60deg, transparent 120deg); animation: rotate-bg 8s linear infinite; pointer-events: none; }
   @keyframes rotate-bg { to { transform: rotate(360deg); } }
   .signal-card > * { position: relative; z-index: 1; }
 
   .signal-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
-  .signal-coeff {
-    font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 700;
-    color: var(--accent-glow); text-shadow: 0 0 40px rgba(245,158,11,0.4);
-    line-height: 1; margin-bottom: 6px; opacity: 0; transform: scale(0.5);
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
+  .signal-coeff { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 700; color: var(--accent-glow); text-shadow: 0 0 40px rgba(245,158,11,0.4); line-height: 1; margin-bottom: 6px; opacity: 0; transform: scale(0.5); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
   .signal-coeff.visible { opacity: 1; transform: scale(1); }
 
   .confidence { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
@@ -133,7 +93,6 @@
   .signal-hint { font-size: 13px; color: var(--text-dim); margin-top: 12px; }
   .signal-hint strong { color: var(--green); }
 
-  /* Result feedback */
   .result-block { display: none; gap: 10px; margin-bottom: 20px; }
   .result-block.visible { display: flex; }
   .result-btn { flex: 1; padding: 14px; border: none; border-radius: 14px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -141,7 +100,6 @@
   .result-btn.win { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
   .result-btn.lose { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
 
-  /* Streak bar */
   .streak-bar { background: var(--surface); border: 1px solid rgba(34,197,94,0.15); border-radius: 14px; padding: 12px 18px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between; }
   .streak-bar.visible { display: flex; }
   .streak-text { font-size: 13px; color: var(--text-dim); }
@@ -151,7 +109,6 @@
   .streak-dot.win { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
   .streak-dot.lose { background: var(--red); border-color: var(--red); }
 
-  /* Main Button */
   .btn-signal { width: 100%; padding: 18px; border: none; border-radius: 16px; font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; color: #1a1025; background: linear-gradient(135deg, var(--accent), var(--pink)); box-shadow: 0 4px 24px rgba(245,158,11,0.3); transition: all 0.25s; text-transform: uppercase; letter-spacing: 1px; }
   .btn-signal:active { transform: scale(0.98); }
   .btn-signal:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -160,7 +117,6 @@
   .btn-signal.loading .btn-text { display: none; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Last wins feed */
   .last-wins { margin-top: 24px; }
   .last-wins-title { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
   .win-entry { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--surface); border-radius: 12px; margin-bottom: 8px; animation: slideIn 0.4s ease-out; }
@@ -186,7 +142,7 @@
     </div>
     <div class="stat-item">
       <div class="stat-value" id="winRate">0%</div>
-      <div class="stat-label">Точность ИИ</div>
+      <div class="stat-label">Винрейт</div>
     </div>
   </div>
 
@@ -196,9 +152,7 @@
     <div class="signal-label">Сигнал — забери на</div>
     <div class="signal-coeff" id="signalCoeff">—</div>
     <div class="confidence">
-      <div class="confidence-bar-bg">
-        <div class="confidence-bar-fill" id="confFill"></div>
-      </div>
+      <div class="confidence-bar-bg"><div class="confidence-bar-fill" id="confFill"></div></div>
       <div class="confidence-pct" id="confPct">—</div>
     </div>
     <div class="signal-hint" id="signalHint">Нажми кнопку для получения сигнала</div>
@@ -230,58 +184,111 @@
   const rand = (min, max) => Math.random() * (max - min) + min;
   const randInt = (min, max) => Math.floor(rand(min, max + 1));
 
+  // Реалистичная генерация коэффициентов
   function genCoeff() {
-    const r = Math.random();
-    if (r < 0.55) return rand(1.2, 2.5);
-    if (r < 0.85) return rand(2.5, 6.0);
-    return rand(6.0, 15.0);
+    const r = Math.random() * 100;
+    if (r < 25) return rand(1.00, 1.25);  // Сливы (как в 1win)
+    if (r < 65) return rand(1.26, 2.50);  // Стандарт
+    if (r < 90) return rand(2.51, 6.00);  // Хорошие
+    return rand(6.01, 15.00);             // Редкие
   }
 
   const names = ['Alex','Maria','Дима','Анна','John','Pedro','Ahmed','Олег','Иван','Sara','Mike','Карина','Артём','Лена','Tom','Max','Nikita','Влад','Рустам','Ali'];
   const genUsername = () => names[randInt(0, names.length - 1)].slice(0, randInt(2, 4)) + '***';
 
   function initStats() {
-    document.getElementById('todayEarnings').textContent = '$' + randInt(9000, 16000).toLocaleString();
-    document.getElementById('winRate').textContent = randInt(92, 98) + '%';
+    const earnEl = document.getElementById('todayEarnings');
+    const wrEl = document.getElementById('winRate');
+    
+    // Сохранение суммы в памяти
+    let savedEarn = localStorage.getItem('rq_earn');
+    let savedWR = localStorage.getItem('rq_wr');
+    let lastUpdate = localStorage.getItem('rq_last_time');
+
+    let currentEarn = savedEarn ? parseInt(savedEarn) : randInt(1000, 1500);
+    let currentWR = savedWR ? savedWR : randInt(92, 98) + '%';
+    
+    // Если прошло время, начисляем "пассивный" доход
+    if (lastUpdate) {
+      const secondsPassed = Math.floor((Date.now() - parseInt(lastUpdate)) / 1000);
+      const growth = Math.floor((secondsPassed / 300) * randInt(10, 30)); // Рост каждые 5 минут
+      currentEarn += growth;
+    }
+
+    earnEl.textContent = '$' + currentEarn.toLocaleString();
+    wrEl.textContent = currentWR;
+
+    localStorage.setItem('rq_earn', currentEarn);
+    localStorage.setItem('rq_wr', currentWR);
+    localStorage.setItem('rq_last_time', Date.now());
+
+    // Медленный рост каждые 10 секунд для визуала
     setInterval(() => {
-      const el = document.getElementById('todayEarnings');
-      let v = parseInt(el.textContent.replace(/[$,]/g, ''));
-      el.textContent = '$' + (v + randInt(15, 60)).toLocaleString();
-    }, 4000);
+      currentEarn += randInt(1, 3);
+      earnEl.textContent = '$' + currentEarn.toLocaleString();
+      localStorage.setItem('rq_earn', currentEarn);
+      localStorage.setItem('rq_last_time', Date.now());
+    }, 10000);
   }
 
-  function addWinEntry(isInitial = false) {
+  // Генерация ленты выигрышей в правильном порядке времени
+  function buildInitialWins() {
     const container = document.getElementById('lastWins');
-    const amount = randInt(15, 650);
-    const timeLabels = ['только что', '1 мин. назад', '2 мин. назад'];
-    const time = isInitial ? timeLabels[randInt(1, 2)] : 'только что';
+    const labels = ['только что', '1 мин. назад', '2 мин. назад', '3 мин. назад', '4 мин. назад'];
     
+    labels.forEach(label => {
+      const entry = document.createElement('div');
+      entry.className = 'win-entry';
+      entry.innerHTML = `
+        <div class="win-info">
+          <span class="win-user">👤 ${genUsername()}</span>
+          <span class="win-time">${label}</span>
+        </div>
+        <span class="win-amount">+$${randInt(40, 450)}</span>
+      `;
+      container.appendChild(entry);
+    });
+
+    // Заполнение истории реалистичными иксами
+    const bar = document.getElementById('historyBar');
+    for(let i=0; i<12; i++) {
+      const c = genCoeff();
+      const chip = document.createElement('div');
+      chip.className = 'history-chip' + (c >= 5 ? ' mega' : c >= 2 ? ' high' : '');
+      chip.textContent = c.toFixed(2) + 'x';
+      bar.appendChild(chip);
+    }
+  }
+
+  // Обновление ленты (сдвиг времени)
+  function rotateWins() {
+    const container = document.getElementById('lastWins');
+    if (container.children.length >= 5) container.removeChild(container.lastChild);
+    
+    const times = container.querySelectorAll('.win-time');
+    times.forEach((span, i) => {
+      span.textContent = (i + 1) + ' мин. назад';
+    });
+
     const entry = document.createElement('div');
     entry.className = 'win-entry';
     entry.innerHTML = `
       <div class="win-info">
         <span class="win-user">👤 ${genUsername()}</span>
-        <span class="win-time">${time}</span>
+        <span class="win-time">только что</span>
       </div>
-      <span class="win-amount">+$${amount}</span>
+      <span class="win-amount">+$${randInt(50, 400)}</span>
     `;
     container.insertBefore(entry, container.firstChild);
-    if (container.children.length > 5) container.removeChild(container.lastChild);
   }
 
   function getSignal() {
     if (signalActive) return;
-    const btn = document.getElementById('btnSignal'), 
-          coeff = document.getElementById('signalCoeff'), 
-          hint = document.getElementById('signalHint'), 
-          cf = document.getElementById('confFill'), 
-          cp = document.getElementById('confPct'), 
-          rb = document.getElementById('resultBlock');
+    const btn = document.getElementById('btnSignal'), coeff = document.getElementById('signalCoeff'), 
+          cf = document.getElementById('confFill'), cp = document.getElementById('confPct'), rb = document.getElementById('resultBlock');
 
-    btn.classList.add('loading');
-    btn.disabled = true;
-    coeff.classList.remove('visible');
-    rb.classList.remove('visible');
+    btn.classList.add('loading'); btn.disabled = true;
+    coeff.classList.remove('visible'); rb.classList.remove('visible');
 
     setTimeout(() => {
       const c = genCoeff(), confidence = randInt(85, 99);
@@ -289,9 +296,8 @@
       coeff.classList.add('visible');
       cf.style.width = confidence + '%';
       cp.textContent = confidence + '%';
-      hint.innerHTML = 'Забирай на <strong>x' + c.toFixed(2) + '</strong>';
-      btn.classList.remove('loading');
-      btn.disabled = false;
+      document.getElementById('signalHint').innerHTML = 'Забирай на <strong>x' + c.toFixed(2) + '</strong>';
+      btn.classList.remove('loading'); btn.disabled = false;
       signalActive = true;
       setTimeout(() => rb.classList.add('visible'), 500);
 
@@ -306,7 +312,7 @@
   function recordResult(won) {
     signalActive = false;
     document.getElementById('resultBlock').classList.remove('visible');
-    if (won) { streak++; if (Math.random() < 0.2) streak += randInt(1, 2); } else { streak = 0; }
+    if (won) streak++; else streak = 0;
     results.push(won); if (results.length > 8) results.shift();
 
     const sb = document.getElementById('streakBar');
@@ -317,12 +323,11 @@
       const d = document.createElement('div'); d.className = 'streak-dot ' + (w ? 'win' : 'lose');
       si.appendChild(d);
     });
-    document.getElementById('signalHint').innerHTML = won ? '🎉 Сигнал подтвержден!' : '💡 Следуй стратегии x2';
   }
 
   initStats();
-  for(let i=0; i<4; i++) addWinEntry(true);
-  setInterval(addWinEntry, randInt(10000, 20000));
+  buildInitialWins();
+  setInterval(rotateWins, randInt(35000, 60000));
 </script>
 </body>
 </html>
