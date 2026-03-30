@@ -45,6 +45,7 @@
   .container {
     position: relative; z-index: 1;
     max-width: 420px; margin: 0 auto;
+    padding: 20px 166px 40px; /* Фикс паддинга */
     padding: 20px 16px 40px;
   }
 
@@ -189,10 +190,19 @@
   function initStats() {
     const earnEl = document.getElementById('todayEarnings');
     const wrEl = document.getElementById('winRate');
+    const coeffEl = document.getElementById('signalCoeff');
+    const confFill = document.getElementById('confFill');
+    const confPct = document.getElementById('confPct');
+    const hintEl = document.getElementById('signalHint');
+
     let savedEarn = localStorage.getItem('lj_earn');
     let savedWR = localStorage.getItem('lj_wr');
     let lastTime = localStorage.getItem('lj_time');
     
+    // Восстановление последнего сигнала
+    let lastCoeff = localStorage.getItem('lj_last_coeff');
+    let lastConf = localStorage.getItem('lj_last_conf');
+
     let currentEarn = savedEarn ? parseInt(savedEarn) : randInt(1100, 1600);
     let currentWR = savedWR ? savedWR : randInt(89, 94) + '%';
     
@@ -203,6 +213,17 @@
 
     earnEl.textContent = '$' + currentEarn.toLocaleString();
     wrEl.textContent = currentWR;
+
+    // Отображаем сохраненный сигнал, если он был
+    if (lastCoeff && lastConf) {
+      coeffEl.textContent = 'x' + lastCoeff;
+      coeffEl.classList.add('visible');
+      confFill.style.width = lastConf + '%';
+      confPct.textContent = lastConf + '%';
+      hintEl.innerHTML = 'Забирай на <strong>x' + lastCoeff + '</strong>';
+      document.getElementById('resultBlock').classList.add('visible');
+      signalActive = true;
+    }
     
     localStorage.setItem('lj_earn', currentEarn);
     localStorage.setItem('lj_wr', currentWR);
@@ -216,14 +237,13 @@
     }, 8000);
   }
 
-  // РЕАЛИСТИЧНАЯ МОДЕЛЬ КОЭФФИЦИЕНТОВ
   function getRealisticCoeff() {
     const chance = Math.random() * 100;
-    if (chance < 20) return rand(1.00, 1.20);   // "Слив" (20% шанс)
-    if (chance < 60) return rand(1.21, 2.50);   // Стандарт (40% шанс)
-    if (chance < 85) return rand(2.51, 5.00);   // Хороший (25% шанс)
-    if (chance < 97) return rand(5.01, 15.00);  // Редкий (12% шанс)
-    return rand(15.01, 45.00);                  // Джекпот (3% шанс)
+    if (chance < 20) return rand(1.00, 1.20);
+    if (chance < 60) return rand(1.21, 2.50);
+    if (chance < 85) return rand(2.51, 5.00);
+    if (chance < 97) return rand(5.01, 15.00);
+    return rand(15.01, 45.00);
   }
 
   function genUsername() {
@@ -240,16 +260,7 @@
       entry.innerHTML = `<div class="win-info"><span class="win-user">👤 ${genUsername()}</span><span class="win-time">${label}</span></div><span class="win-amount">+$${randInt(40, 320)}</span>`;
       container.appendChild(entry);
     });
-
-    // Заполняем историю реалистичными иксами
-    const bar = document.getElementById('historyBar');
-    for(let i=0; i<12; i++) {
-      const c = getRealisticCoeff();
-      const chip = document.createElement('div');
-      chip.className = 'history-chip' + (c >= 10 ? ' mega' : c >= 2 ? ' high' : '');
-      chip.textContent = c.toFixed(2) + 'x';
-      bar.appendChild(chip);
-    }
+    // История теперь пустая при старте, как ты и просил.
   }
 
   function addNewWin() {
@@ -275,18 +286,25 @@
     setTimeout(() => {
       const c = getRealisticCoeff(); 
       const confidence = randInt(85, 98);
-      coeff.textContent = 'x' + c.toFixed(2);
+      const cFixed = c.toFixed(2);
+
+      coeff.textContent = 'x' + cFixed;
       coeff.classList.add('visible');
       cf.style.width = confidence + '%';
       cp.textContent = confidence + '%';
-      document.getElementById('signalHint').innerHTML = 'Забирай на <strong>x' + c.toFixed(2) + '</strong>';
+      document.getElementById('signalHint').innerHTML = 'Забирай на <strong>x' + cFixed + '</strong>';
+      
+      // Сохраняем в localStorage
+      localStorage.setItem('lj_last_coeff', cFixed);
+      localStorage.setItem('lj_last_conf', confidence);
+
       btn.classList.remove('loading'); btn.disabled = false;
       signalActive = true;
       setTimeout(() => rb.classList.add('visible'), 500);
 
       const bar = document.getElementById('historyBar'), chip = document.createElement('div');
       chip.className = 'history-chip' + (c >= 10 ? ' mega' : c >= 2 ? ' high' : '');
-      chip.textContent = c.toFixed(2) + 'x';
+      chip.textContent = cFixed + 'x';
       bar.insertBefore(chip, bar.firstChild);
       if (bar.children.length > 15) bar.removeChild(bar.lastChild);
     }, randInt(1200, 2200));
@@ -294,6 +312,10 @@
 
   function recordResult(won) {
     signalActive = false;
+    // Очищаем сохраненный сигнал после ответа
+    localStorage.removeItem('lj_last_coeff');
+    localStorage.removeItem('lj_last_conf');
+
     document.getElementById('resultBlock').classList.remove('visible');
     if (won) streak++; else streak = 0;
     results.push(won); if (results.length > 8) results.shift();
@@ -305,6 +327,7 @@
       const d = document.createElement('div'); d.className = 'streak-dot ' + (w ? 'win' : 'lose');
       si.appendChild(d);
     });
+    document.getElementById('signalHint').textContent = 'Нажми кнопку для получения сигнала';
   }
 
   initStats();
