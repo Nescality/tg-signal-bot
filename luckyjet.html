@@ -189,19 +189,16 @@
   function initStats() {
     const earnEl = document.getElementById('todayEarnings');
     const wrEl = document.getElementById('winRate');
-    
     let savedEarn = localStorage.getItem('lj_earn');
     let savedWR = localStorage.getItem('lj_wr');
     let lastTime = localStorage.getItem('lj_time');
     
-    // Начальная сумма теперь от 1000 до 1500, если памяти нет
-    let currentEarn = savedEarn ? parseInt(savedEarn) : randInt(1000, 1500);
-    let currentWR = savedWR ? savedWR : randInt(94, 98) + '%';
+    let currentEarn = savedEarn ? parseInt(savedEarn) : randInt(1100, 1600);
+    let currentWR = savedWR ? savedWR : randInt(89, 94) + '%';
     
     if (lastTime) {
       const secondsPassed = Math.floor((Date.now() - parseInt(lastTime)) / 1000);
-      const growth = Math.floor((secondsPassed / 15) * randInt(5, 12));
-      currentEarn += growth;
+      currentEarn += Math.floor((secondsPassed / 20) * randInt(4, 10));
     }
 
     earnEl.textContent = '$' + currentEarn.toLocaleString();
@@ -212,11 +209,21 @@
     localStorage.setItem('lj_time', Date.now());
 
     setInterval(() => {
-      currentEarn += randInt(5, 15);
+      currentEarn += randInt(2, 8);
       earnEl.textContent = '$' + currentEarn.toLocaleString();
       localStorage.setItem('lj_earn', currentEarn);
       localStorage.setItem('lj_time', Date.now());
-    }, 7000);
+    }, 8000);
+  }
+
+  // РЕАЛИСТИЧНАЯ МОДЕЛЬ КОЭФФИЦИЕНТОВ
+  function getRealisticCoeff() {
+    const chance = Math.random() * 100;
+    if (chance < 20) return rand(1.00, 1.20);   // "Слив" (20% шанс)
+    if (chance < 60) return rand(1.21, 2.50);   // Стандарт (40% шанс)
+    if (chance < 85) return rand(2.51, 5.00);   // Хороший (25% шанс)
+    if (chance < 97) return rand(5.01, 15.00);  // Редкий (12% шанс)
+    return rand(15.01, 45.00);                  // Джекпот (3% шанс)
   }
 
   function genUsername() {
@@ -224,46 +231,36 @@
     return names[randInt(0, names.length - 1)].slice(0, randInt(2, 4)) + '***';
   }
 
-  // Правильная генерация ленты выигрышей по времени
   function buildInitialWins() {
     const container = document.getElementById('lastWins');
     const timeLabels = ['только что', '1 мин. назад', '2 мин. назад', '3 мин. назад', '4 мин. назад'];
-    
     timeLabels.forEach(label => {
       const entry = document.createElement('div');
       entry.className = 'win-entry';
-      entry.innerHTML = `
-        <div class="win-info">
-          <span class="win-user">👤 ${genUsername()}</span>
-          <span class="win-time">${label}</span>
-        </div>
-        <span class="win-amount">+$${randInt(50, 450)}</span>
-      `;
-      container.appendChild(entry); // Добавляем вниз, чтобы первый был "только что"
+      entry.innerHTML = `<div class="win-info"><span class="win-user">👤 ${genUsername()}</span><span class="win-time">${label}</span></div><span class="win-amount">+$${randInt(40, 320)}</span>`;
+      container.appendChild(entry);
     });
+
+    // Заполняем историю реалистичными иксами
+    const bar = document.getElementById('historyBar');
+    for(let i=0; i<12; i++) {
+      const c = getRealisticCoeff();
+      const chip = document.createElement('div');
+      chip.className = 'history-chip' + (c >= 10 ? ' mega' : c >= 2 ? ' high' : '');
+      chip.textContent = c.toFixed(2) + 'x';
+      bar.appendChild(chip);
+    }
   }
 
   function addNewWin() {
     const container = document.getElementById('lastWins');
-    // Удаляем последний (самый старый)
     if (container.children.length >= 5) container.removeChild(container.lastChild);
-    
-    // Все текущие элементы сдвигаем по времени (визуально)
-    const items = container.querySelectorAll('.win-time');
-    items.forEach((span, idx) => {
+    container.querySelectorAll('.win-time').forEach((span, idx) => {
       span.textContent = (idx + 1) + ' мин. назад';
     });
-
-    // Добавляем новый вверх
     const entry = document.createElement('div');
     entry.className = 'win-entry';
-    entry.innerHTML = `
-      <div class="win-info">
-        <span class="win-user">👤 ${genUsername()}</span>
-        <span class="win-time">только что</span>
-      </div>
-      <span class="win-amount">+$${randInt(50, 450)}</span>
-    `;
+    entry.innerHTML = `<div class="win-info"><span class="win-user">👤 ${genUsername()}</span><span class="win-time">только что</span></div><span class="win-amount">+$${randInt(30, 280)}</span>`;
     container.insertBefore(entry, container.firstChild);
   }
 
@@ -276,7 +273,8 @@
     coeff.classList.remove('visible'); rb.classList.remove('visible');
 
     setTimeout(() => {
-      const c = rand(1.2, 8.0), confidence = randInt(88, 99);
+      const c = getRealisticCoeff(); 
+      const confidence = randInt(85, 98);
       coeff.textContent = 'x' + c.toFixed(2);
       coeff.classList.add('visible');
       cf.style.width = confidence + '%';
@@ -287,11 +285,11 @@
       setTimeout(() => rb.classList.add('visible'), 500);
 
       const bar = document.getElementById('historyBar'), chip = document.createElement('div');
-      chip.className = 'history-chip' + (c >= 5 ? ' mega' : c >= 2 ? ' high' : '');
+      chip.className = 'history-chip' + (c >= 10 ? ' mega' : c >= 2 ? ' high' : '');
       chip.textContent = c.toFixed(2) + 'x';
       bar.insertBefore(chip, bar.firstChild);
       if (bar.children.length > 15) bar.removeChild(bar.lastChild);
-    }, randInt(1500, 2500));
+    }, randInt(1200, 2200));
   }
 
   function recordResult(won) {
@@ -299,7 +297,6 @@
     document.getElementById('resultBlock').classList.remove('visible');
     if (won) streak++; else streak = 0;
     results.push(won); if (results.length > 8) results.shift();
-
     const sb = document.getElementById('streakBar');
     sb.classList.add('visible');
     document.getElementById('streakCount').textContent = streak;
@@ -312,8 +309,7 @@
 
   initStats();
   buildInitialWins();
-  // Добавление новых выигрышей каждые 20-30 секунд (не спам)
-  setInterval(addNewWin, randInt(20000, 35000));
+  setInterval(addNewWin, randInt(25000, 45000));
 </script>
 </body>
 </html>
