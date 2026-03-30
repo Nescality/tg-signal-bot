@@ -293,7 +293,7 @@
     document.getElementById('strCnt').textContent=streak;
     const sd=document.getElementById('strDots');sd.innerHTML='';
     results.slice(-8).forEach(x=>{const d=document.createElement('div');d.className='s-dot '+(x?'w':'l');sd.appendChild(d);});
-    document.getElementById('hint').innerHTML=w?'🎉 <strong>Отлично!</strong> Серия: '+streak:'💡 Удвой ставку (x2) для покрытия';
+    document.getElementById('hint').innerHTML=w?'🎉 <strong>Отлично!</strong> Серия: '+streak:'💡 Удвой ставку (x2) для покрытия'; //double
   }
 
   init();
