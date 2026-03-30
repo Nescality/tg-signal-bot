@@ -237,60 +237,152 @@
 </div>
 
 <script>
-  let streak=0, results=[], active=false;
-  const r=(a,b)=>Math.random()*(b-a)+a, ri=(a,b)=>Math.floor(r(a,b+1));
-  const gc=()=>{const x=Math.random();return x<.55?r(1.2,2.5):x<.85?r(2.5,6):r(6,20);};
-  const names=['Alex','Maria','Дима','Анна','John','Pedro','Олег','Карина','Max','Влад','Рустам','Ali','Sara','Артём','Лена','Tom','Nikita','Ahmed'];
-  const gn=()=>names[ri(0,names.length-1)].slice(0,ri(2,4))+'***';
+  // ===== State =====
+  var streak = 0;
+  var results = [];
+  var signalActive = false;
 
-  function init(){
-    document.getElementById('sEarn').textContent='$'+ri(9000,16000).toLocaleString();
-    document.getElementById('sWr').textContent=ri(86,95)+'%';
-    setInterval(()=>{let e=document.getElementById('sEarn'),v=parseInt(e.textContent.replace(/[$,]/g,''));e.textContent='$'+(v+ri(15,90)).toLocaleString();},3000);
-    const h=document.getElementById('hist');
-    for(let i=0;i<15;i++){const c=gc(),d=document.createElement('div');d.className='h-chip'+(c>=5?' mega':c>=2.5?' high':'');d.textContent=c.toFixed(2)+'x';h.appendChild(d);}
-    for(let i=0;i<4;i++)addWin();
-    setInterval(addWin,ri(4000,8000));
+  // ===== Helpers =====
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+  function randInt(min, max) { return Math.floor(rand(min, max + 1)); }
+
+  function genCoeff() {
+    var x = Math.random();
+    if (x < 0.55) return rand(1.2, 2.5);
+    if (x < 0.85) return rand(2.5, 6.0);
+    return rand(6.0, 20.0);
   }
 
-  function addWin(){
-    const c=document.getElementById('feedList'),e=document.createElement('div');
-    e.className='feed-entry';
-    e.innerHTML=`<span class="feed-user">👤 ${gn()}</span><span class="feed-amt">+$${r(5,500).toFixed(0)}</span>`;
-    c.insertBefore(e,c.firstChild);
-    if(c.children.length>5)c.removeChild(c.lastChild);
+  var namesList = ['Alex','Maria','Дима','Анна','John','Pedro','Олег','Карина','Max','Влад','Рустам','Ali','Sara','Артём','Лена','Tom','Nikita','Ahmed'];
+  function genUsername() {
+    var name = namesList[randInt(0, namesList.length - 1)];
+    return name.slice(0, randInt(2, 4)) + '***';
   }
 
-  function getSignal(){
-    if(active)return;
-    const btn=document.getElementById('btnGo'),co=document.getElementById('coeff'),ht=document.getElementById('hint'),cf=document.getElementById('cFill'),cp=document.getElementById('cPct'),rb=document.getElementById('resBlock');
-    btn.classList.add('loading');btn.disabled=true;co.classList.remove('visible');rb.classList.remove('visible');
-    setTimeout(()=>{
-      const c=gc(),conf=ri(78,96);
-      co.textContent='x'+c.toFixed(2);co.classList.add('visible');
-      cf.style.width=conf+'%';cp.textContent=conf+'%';
-      ht.innerHTML='Ставь и забирай на <strong>x'+c.toFixed(2)+'</strong>';
-      btn.classList.remove('loading');btn.disabled=false;active=true;
-      setTimeout(()=>rb.classList.add('visible'),500);
-      const h=document.getElementById('hist'),ch=document.createElement('div');
-      ch.className='h-chip'+(c>=5?' mega':c>=2.5?' high':'');ch.textContent=c.toFixed(2)+'x';
-      h.insertBefore(ch,h.firstChild);if(h.children.length>20)h.removeChild(h.lastChild);
-    },ri(1500,2500));
+  // ===== Init =====
+  function initStats() {
+    document.getElementById('sEarn').textContent = '$' + randInt(9000, 16000).toLocaleString();
+    document.getElementById('sWr').textContent = randInt(86, 95) + '%';
+
+    setInterval(function() {
+      var el = document.getElementById('sEarn');
+      var v = parseInt(el.textContent.replace(/[$,]/g, ''));
+      el.textContent = '$' + (v + randInt(15, 90)).toLocaleString();
+    }, 3000);
   }
 
-  function record(w){
-    active=false;
-    document.getElementById('resBlock').classList.remove('visible');
-    if(w){streak++;if(Math.random()<.3)streak=Math.max(streak,ri(3,7));}else streak=0;
-    results.push(w);if(results.length>10)results.shift();
-    const sb=document.getElementById('streakBar');sb.classList.add('visible');
-    document.getElementById('strCnt').textContent=streak;
-    const sd=document.getElementById('strDots');sd.innerHTML='';
-    results.slice(-8).forEach(x=>{const d=document.createElement('div');d.className='s-dot '+(x?'w':'l');sd.appendChild(d);});
-    document.getElementById('hint').innerHTML=w?'🎉 <strong>Отлично!</strong> Серия: '+streak:'💡 Удвой ставку (x2) для покрытия';
+  function initHistory() {
+    var bar = document.getElementById('hist');
+    for (var i = 0; i < 15; i++) {
+      var c = genCoeff();
+      var chip = document.createElement('div');
+      chip.className = 'h-chip' + (c >= 5 ? ' mega' : c >= 2.5 ? ' high' : '');
+      chip.textContent = c.toFixed(2) + 'x';
+      bar.appendChild(chip);
+    }
   }
 
-  init();
+  // ===== Last wins =====
+  function addFakeWin() {
+    var container = document.getElementById('feedList');
+    var amount = rand(5, 500).toFixed(0);
+    var entry = document.createElement('div');
+    entry.className = 'feed-entry';
+    entry.innerHTML = '<span class="feed-user">\uD83D\uDC64 ' + genUsername() + '</span><span class="feed-amt">+$' + amount + '</span>';
+    container.insertBefore(entry, container.firstChild);
+    if (container.children.length > 5) container.removeChild(container.lastChild);
+  }
+
+  function initLastWins() {
+    for (var i = 0; i < 4; i++) addFakeWin();
+    setInterval(addFakeWin, randInt(4000, 8000));
+  }
+
+  // ===== Get signal =====
+  function getSignal() {
+    if (signalActive) return;
+
+    var btn = document.getElementById('btnGo');
+    var coeff = document.getElementById('coeff');
+    var hint = document.getElementById('hint');
+    var confFill = document.getElementById('cFill');
+    var confPct = document.getElementById('cPct');
+    var resultBlock = document.getElementById('resBlock');
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+    coeff.classList.remove('visible');
+    resultBlock.classList.remove('visible');
+
+    setTimeout(function() {
+      var c = genCoeff();
+      var confidence = randInt(78, 96);
+
+      coeff.textContent = 'x' + c.toFixed(2);
+      coeff.classList.add('visible');
+      confFill.style.width = confidence + '%';
+      confPct.textContent = confidence + '%';
+      hint.innerHTML = 'Ставь и забирай на <strong>x' + c.toFixed(2) + '</strong>';
+
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      signalActive = true;
+
+      setTimeout(function() {
+        resultBlock.classList.add('visible');
+      }, 500);
+
+      // Add to history
+      var bar = document.getElementById('hist');
+      var chip = document.createElement('div');
+      chip.className = 'h-chip' + (c >= 5 ? ' mega' : c >= 2.5 ? ' high' : '');
+      chip.textContent = c.toFixed(2) + 'x';
+      bar.insertBefore(chip, bar.firstChild);
+      if (bar.children.length > 20) bar.removeChild(bar.lastChild);
+    }, randInt(1500, 2500));
+  }
+
+  // ===== Record result =====
+  function record(won) {
+    signalActive = false;
+    var resultBlock = document.getElementById('resBlock');
+    resultBlock.classList.remove('visible');
+
+    if (won) {
+      streak++;
+      if (Math.random() < 0.3) streak = Math.max(streak, randInt(3, 7));
+    } else {
+      streak = 0;
+    }
+
+    results.push(won);
+    if (results.length > 10) results.shift();
+
+    var sb = document.getElementById('streakBar');
+    sb.classList.add('visible');
+    document.getElementById('strCnt').textContent = streak;
+
+    var sd = document.getElementById('strDots');
+    sd.innerHTML = '';
+    var show = results.slice(-8);
+    for (var i = 0; i < show.length; i++) {
+      var dot = document.createElement('div');
+      dot.className = 's-dot ' + (show[i] ? 'w' : 'l');
+      sd.appendChild(dot);
+    }
+
+    var hint = document.getElementById('hint');
+    if (won) {
+      hint.innerHTML = '\uD83C\uDF89 <strong>Отлично!</strong> Серия побед: ' + streak;
+    } else {
+      hint.innerHTML = '\uD83D\uDCA1 Удвой ставку (x2) для покрытия';
+    }
+  }
+
+  // ===== Start =====
+  initStats();
+  initHistory();
+  initLastWins();
 </script>
 </body>
 </html>
