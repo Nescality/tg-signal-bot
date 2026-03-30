@@ -48,7 +48,6 @@
     padding: 20px 16px 40px;
   }
 
-  /* Header */
   .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
   .logo { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
   .logo span { color: var(--accent-glow); }
@@ -69,7 +68,6 @@
     50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
   }
 
-  /* Stats */
   .stats-ticker {
     background: var(--surface); border: 1px solid rgba(168,85,247,0.15);
     border-radius: 14px; padding: 14px 18px; margin-bottom: 20px;
@@ -79,14 +77,12 @@
   .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--green); }
   .stat-label { font-size: 11px; color: var(--text-dim); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  /* History */
   .history-bar { display: flex; gap: 6px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; min-height: 28px; }
   .history-bar::-webkit-scrollbar { display: none; }
   .history-chip { flex-shrink: 0; padding: 5px 10px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; background: var(--surface2); color: var(--text-dim); border: 1px solid transparent; }
   .history-chip.high { background: rgba(168,85,247,0.2); color: var(--accent-glow); border-color: rgba(168,85,247,0.3); }
   .history-chip.mega { background: rgba(251,191,36,0.15); color: var(--gold); border-color: rgba(251,191,36,0.3); }
 
-  /* Signal Card */
   .signal-card { background: var(--surface); border: 1px solid rgba(168,85,247,0.2); border-radius: 20px; padding: 28px 24px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; }
   .signal-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent 0deg, rgba(168,85,247,0.08) 60deg, transparent 120deg); animation: rotate-bg 8s linear infinite; pointer-events: none; }
   @keyframes rotate-bg { to { transform: rotate(360deg); } }
@@ -102,7 +98,6 @@
   .signal-hint { font-size: 13px; color: var(--text-dim); margin-top: 12px; }
   .signal-hint strong { color: var(--green); }
 
-  /* Results & Streak */
   .result-block { display: none; gap: 10px; margin-bottom: 20px; }
   .result-block.visible { display: flex; }
   .result-btn { flex: 1; padding: 14px; border: none; border-radius: 14px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -118,14 +113,12 @@
   .streak-dot.win { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
   .streak-dot.lose { background: var(--red); border-color: var(--red); }
 
-  /* Button */
   .btn-signal { width: 100%; padding: 18px; border: none; border-radius: 16px; font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), #7c3aed); box-shadow: 0 4px 24px rgba(168,85,247,0.3); transition: all 0.25s; text-transform: uppercase; letter-spacing: 1px; }
   .btn-signal .loader { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
   .btn-signal.loading .loader { display: inline-block; }
   .btn-signal.loading .btn-text { display: none; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Wins Feed */
   .last-wins { margin-top: 24px; }
   .last-wins-title { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
   .win-entry { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--surface); border-radius: 12px; margin-bottom: 8px; animation: slideIn 0.4s ease-out; }
@@ -201,37 +194,29 @@
     let savedWR = localStorage.getItem('lj_wr');
     let lastTime = localStorage.getItem('lj_time');
     
-    let currentEarn = savedEarn ? parseInt(savedEarn) : randInt(9000, 11000);
-    // Делаем винрейт статичным, чтобы не менялся при перезагрузке
+    // Начальная сумма теперь от 1000 до 1500, если памяти нет
+    let currentEarn = savedEarn ? parseInt(savedEarn) : randInt(1000, 1500);
     let currentWR = savedWR ? savedWR : randInt(94, 98) + '%';
     
     if (lastTime) {
       const secondsPassed = Math.floor((Date.now() - parseInt(lastTime)) / 1000);
-      const growth = Math.floor((secondsPassed / 10) * randInt(8, 15));
+      const growth = Math.floor((secondsPassed / 15) * randInt(5, 12));
       currentEarn += growth;
     }
 
     earnEl.textContent = '$' + currentEarn.toLocaleString();
     wrEl.textContent = currentWR;
     
-    // Сохраняем начальные/обновленные данные
     localStorage.setItem('lj_earn', currentEarn);
     localStorage.setItem('lj_wr', currentWR);
     localStorage.setItem('lj_time', Date.now());
 
     setInterval(() => {
-      currentEarn += randInt(10, 25);
+      currentEarn += randInt(5, 15);
       earnEl.textContent = '$' + currentEarn.toLocaleString();
       localStorage.setItem('lj_earn', currentEarn);
       localStorage.setItem('lj_time', Date.now());
-    }, 5000);
-  }
-
-  function genCoeff() {
-    const r = Math.random();
-    if (r < 0.55) return rand(1.2, 2.3);
-    if (r < 0.85) return rand(2.3, 5.0);
-    return rand(5.0, 12.0);
+    }, 7000);
   }
 
   function genUsername() {
@@ -239,19 +224,47 @@
     return names[randInt(0, names.length - 1)].slice(0, randInt(2, 4)) + '***';
   }
 
-  function addWinEntry(isInitial = false) {
+  // Правильная генерация ленты выигрышей по времени
+  function buildInitialWins() {
     const container = document.getElementById('lastWins');
+    const timeLabels = ['только что', '1 мин. назад', '2 мин. назад', '3 мин. назад', '4 мин. назад'];
+    
+    timeLabels.forEach(label => {
+      const entry = document.createElement('div');
+      entry.className = 'win-entry';
+      entry.innerHTML = `
+        <div class="win-info">
+          <span class="win-user">👤 ${genUsername()}</span>
+          <span class="win-time">${label}</span>
+        </div>
+        <span class="win-amount">+$${randInt(50, 450)}</span>
+      `;
+      container.appendChild(entry); // Добавляем вниз, чтобы первый был "только что"
+    });
+  }
+
+  function addNewWin() {
+    const container = document.getElementById('lastWins');
+    // Удаляем последний (самый старый)
+    if (container.children.length >= 5) container.removeChild(container.lastChild);
+    
+    // Все текущие элементы сдвигаем по времени (визуально)
+    const items = container.querySelectorAll('.win-time');
+    items.forEach((span, idx) => {
+      span.textContent = (idx + 1) + ' мин. назад';
+    });
+
+    // Добавляем новый вверх
     const entry = document.createElement('div');
     entry.className = 'win-entry';
     entry.innerHTML = `
       <div class="win-info">
         <span class="win-user">👤 ${genUsername()}</span>
-        <span class="win-time">${isInitial ? randInt(1, 4) + ' мин. назад' : 'только что'}</span>
+        <span class="win-time">только что</span>
       </div>
       <span class="win-amount">+$${randInt(50, 450)}</span>
     `;
     container.insertBefore(entry, container.firstChild);
-    if (container.children.length > 5) container.removeChild(container.lastChild);
   }
 
   function getSignal() {
@@ -263,7 +276,7 @@
     coeff.classList.remove('visible'); rb.classList.remove('visible');
 
     setTimeout(() => {
-      const c = genCoeff(), confidence = randInt(88, 99);
+      const c = rand(1.2, 8.0), confidence = randInt(88, 99);
       coeff.textContent = 'x' + c.toFixed(2);
       coeff.classList.add('visible');
       cf.style.width = confidence + '%';
@@ -284,7 +297,7 @@
   function recordResult(won) {
     signalActive = false;
     document.getElementById('resultBlock').classList.remove('visible');
-    if (won) { streak++; } else { streak = 0; }
+    if (won) streak++; else streak = 0;
     results.push(won); if (results.length > 8) results.shift();
 
     const sb = document.getElementById('streakBar');
@@ -298,8 +311,9 @@
   }
 
   initStats();
-  for(let i=0; i<4; i++) addWinEntry(true);
-  setInterval(addWinEntry, randInt(12000, 25000));
+  buildInitialWins();
+  // Добавление новых выигрышей каждые 20-30 секунд (не спам)
+  setInterval(addNewWin, randInt(20000, 35000));
 </script>
 </body>
 </html>
