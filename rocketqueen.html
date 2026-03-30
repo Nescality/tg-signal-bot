@@ -270,7 +270,7 @@
   function getSignal(){
     if(active)return;
     const btn=document.getElementById('btnGo'),co=document.getElementById('coeff'),ht=document.getElementById('hint'),cf=document.getElementById('cFill'),cp=document.getElementById('cPct'),rb=document.getElementById('resBlock');
-    btn.classList.add('loading');btn.disabled=true;co.classList.remove('visible');rb.classList.remove('visible');
+    btn.classList.add('loading');btn.disabled=true;co.classList.remove('visible');rb.classList.remove('visible'); //bb
     setTimeout(()=>{
       const c=gc(),conf=ri(78,96);
       co.textContent='x'+c.toFixed(2);co.classList.add('visible');
