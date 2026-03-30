@@ -28,8 +28,11 @@
     color: var(--text);
     font-family: 'Outfit', sans-serif;
     min-height: 100vh;
-    overflow-x: hidden;
+    overflow: hidden;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   body::before {
@@ -44,90 +47,88 @@
 
   .container {
     position: relative; z-index: 1;
-    max-width: 420px; margin: 0 auto;
-    padding: 20px 166px 40px; /* Фикс паддинга */
-    padding: 20px 16px 40px;
+    width: 100%;
+    max-width: 420px;
+    padding: 16px;
   }
 
-  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-  .logo { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
+  .header { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+  .logo { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
   .logo span { color: var(--accent-glow); }
 
-  .badge-live {
-    display: flex; align-items: center; gap: 6px;
-    background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3);
-    border-radius: 20px; padding: 5px 14px;
-    font-size: 12px; font-weight: 600; color: var(--green);
+  /* История КФ */
+  .history-bar { 
+    display: flex; 
+    gap: 6px; 
+    margin-bottom: 16px; 
+    overflow-x: auto; 
+    padding-bottom: 4px; 
+    scrollbar-width: none; 
+    min-height: 32px;
+    justify-content: center;
   }
-  .badge-live::before {
-    content: ''; width: 7px; height: 7px;
-    background: var(--green); border-radius: 50%;
-    animation: pulse-dot 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
-    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
-  }
-
-  .stats-ticker {
-    background: var(--surface); border: 1px solid rgba(168,85,247,0.15);
-    border-radius: 14px; padding: 14px 18px; margin-bottom: 20px;
-    display: flex; justify-content: space-between; gap: 12px;
-  }
-  .stat-item { text-align: center; flex: 1; }
-  .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--green); }
-  .stat-label { font-size: 11px; color: var(--text-dim); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-  .history-bar { display: flex; gap: 6px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; min-height: 28px; }
   .history-bar::-webkit-scrollbar { display: none; }
-  .history-chip { flex-shrink: 0; padding: 5px 10px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; background: var(--surface2); color: var(--text-dim); border: 1px solid transparent; }
+  .history-chip { flex-shrink: 0; padding: 6px 12px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; background: var(--surface2); color: var(--text-dim); border: 1px solid transparent; animation: slideIn 0.3s ease-out; }
   .history-chip.high { background: rgba(168,85,247,0.2); color: var(--accent-glow); border-color: rgba(168,85,247,0.3); }
   .history-chip.mega { background: rgba(251,191,36,0.15); color: var(--gold); border-color: rgba(251,191,36,0.3); }
 
-  .signal-card { background: var(--surface); border: 1px solid rgba(168,85,247,0.2); border-radius: 20px; padding: 28px 24px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; }
+  /* Карточка сигнала */
+  .signal-card { 
+    background: var(--surface); 
+    border: 1px solid rgba(168,85,247,0.2); 
+    border-radius: 24px; 
+    padding: 32px 24px; 
+    text-align: center; 
+    margin-bottom: 16px; 
+    position: relative; 
+    overflow: hidden; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
   .signal-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent 0deg, rgba(168,85,247,0.08) 60deg, transparent 120deg); animation: rotate-bg 8s linear infinite; pointer-events: none; }
   @keyframes rotate-bg { to { transform: rotate(360deg); } }
   .signal-card > * { position: relative; z-index: 1; }
-  .signal-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
-  .signal-coeff { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 700; color: var(--accent-glow); text-shadow: 0 0 40px rgba(168,85,247,0.4); line-height: 1; margin-bottom: 6px; opacity: 0; transform: scale(0.5); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  
+  .signal-label { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+  .signal-coeff { font-family: 'JetBrains Mono', monospace; font-size: 64px; font-weight: 700; color: var(--accent-glow); text-shadow: 0 0 40px rgba(168,85,247,0.4); line-height: 1; margin-bottom: 10px; opacity: 0; transform: scale(0.5); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
   .signal-coeff.visible { opacity: 1; transform: scale(1); }
   
-  .confidence { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-  .confidence-bar-bg { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-  .confidence-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green), var(--green-glow)); width: 0%; transition: width 1s ease; }
-  .confidence-pct { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--green); min-width: 38px; text-align: right; }
-  .signal-hint { font-size: 13px; color: var(--text-dim); margin-top: 12px; }
+  .confidence { display: flex; align-items: center; gap: 10px; margin-top: 15px; padding: 0 10px; }
+  .confidence-bar-bg { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .confidence-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--green), var(--green-glow)); width: 0%; transition: width 1s ease; }
+  .confidence-pct { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--green); min-width: 40px; text-align: right; }
+  
+  .signal-hint { font-size: 14px; color: var(--text-dim); margin-top: 16px; }
   .signal-hint strong { color: var(--green); }
 
-  .result-block { display: none; gap: 10px; margin-bottom: 20px; }
+  /* Блок результата */
+  .result-block { display: none; gap: 12px; margin-bottom: 16px; }
   .result-block.visible { display: flex; }
-  .result-btn { flex: 1; padding: 14px; border: none; border-radius: 14px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .result-btn.win { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
-  .result-btn.lose { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .result-btn { flex: 1; padding: 16px; border: none; border-radius: 16px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .result-btn:active { transform: scale(0.96); }
+  .result-btn.win { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+  .result-btn.lose { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
 
-  .streak-bar { background: var(--surface); border: 1px solid rgba(34,197,94,0.15); border-radius: 14px; padding: 12px 18px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between; }
+  /* Серия */
+  .streak-bar { background: var(--surface); border: 1px solid rgba(168,85,247,0.1); border-radius: 16px; padding: 12px 20px; margin-bottom: 16px; display: none; align-items: center; justify-content: space-between; }
   .streak-bar.visible { display: flex; }
-  .streak-text { font-size: 13px; color: var(--text-dim); }
+  .streak-text { font-size: 14px; color: var(--text-dim); }
   .streak-text strong { color: var(--green); font-family: 'JetBrains Mono', monospace; }
-  .streak-icons { display: flex; gap: 4px; }
-  .streak-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface2); border: 1px solid rgba(139,131,168,0.2); }
-  .streak-dot.win { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
-  .streak-dot.lose { background: var(--red); border-color: var(--red); }
+  .streak-icons { display: flex; gap: 5px; }
+  .streak-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface2); }
+  .streak-dot.win { background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,0.4); }
+  .streak-dot.lose { background: var(--red); }
 
-  .btn-signal { width: 100%; padding: 18px; border: none; border-radius: 16px; font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), #7c3aed); box-shadow: 0 4px 24px rgba(168,85,247,0.3); transition: all 0.25s; text-transform: uppercase; letter-spacing: 1px; }
-  .btn-signal .loader { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  /* Главная кнопка */
+  .btn-signal { width: 100%; padding: 20px; border: none; border-radius: 20px; font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), #7c3aed); box-shadow: 0 8px 25px rgba(168,85,247,0.3); transition: all 0.25s; text-transform: uppercase; letter-spacing: 1.5px; }
+  .btn-signal:active { transform: translateY(2px); box-shadow: 0 4px 15px rgba(168,85,247,0.3); }
+  .btn-signal:disabled { opacity: 0.6; cursor: not-allowed; }
+  
+  .btn-signal .loader { display: none; width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
   .btn-signal.loading .loader { display: inline-block; }
   .btn-signal.loading .btn-text { display: none; }
+  
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .last-wins { margin-top: 24px; }
-  .last-wins-title { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
-  .win-entry { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--surface); border-radius: 12px; margin-bottom: 8px; animation: slideIn 0.4s ease-out; }
-  .win-info { display: flex; flex-direction: column; gap: 2px; }
-  .win-user { font-size: 13px; font-weight: 600; color: var(--text); }
-  .win-time { font-size: 11px; color: var(--text-dim); }
-  .win-amount { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--green); }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 </style>
 </head>
 <body>
@@ -135,28 +136,16 @@
 <div class="container">
   <div class="header">
     <div class="logo">LUCKY<span>JET</span></div>
-    <div class="badge-live">LIVE</div>
-  </div>
-
-  <div class="stats-ticker">
-    <div class="stat-item">
-      <div class="stat-value" id="todayEarnings">$0</div>
-      <div class="stat-label">Заработано сегодня</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value" id="winRate">0%</div>
-      <div class="stat-label">Винрейт</div>
-    </div>
   </div>
 
   <div class="history-bar" id="historyBar"></div>
 
   <div class="signal-card">
-    <div class="signal-label">Сигнал — забери на</div>
+    <div class="signal-label">Сигнал — ожидание</div>
     <div class="signal-coeff" id="signalCoeff">—</div>
     <div class="confidence">
       <div class="confidence-bar-bg"><div class="confidence-bar-fill" id="confFill"></div></div>
-      <div class="confidence-pct" id="confPct">—</div>
+      <div class="confidence-pct" id="confPct">0%</div>
     </div>
     <div class="signal-hint" id="signalHint">Нажми кнопку для получения сигнала</div>
   </div>
@@ -175,11 +164,6 @@
     <span class="btn-text">🚀 Получить сигнал</span>
     <span class="loader"></span>
   </button>
-
-  <div class="last-wins">
-    <div class="last-wins-title">Последние выигрыши</div>
-    <div id="lastWins"></div>
-  </div>
 </div>
 
 <script>
@@ -187,152 +171,102 @@
   const rand = (min, max) => Math.random() * (max - min) + min;
   const randInt = (min, max) => Math.floor(rand(min, max + 1));
 
-  function initStats() {
-    const earnEl = document.getElementById('todayEarnings');
-    const wrEl = document.getElementById('winRate');
+  function initApp() {
     const coeffEl = document.getElementById('signalCoeff');
     const confFill = document.getElementById('confFill');
     const confPct = document.getElementById('confPct');
     const hintEl = document.getElementById('signalHint');
+    const labelEl = document.querySelector('.signal-label');
 
-    let savedEarn = localStorage.getItem('lj_earn');
-    let savedWR = localStorage.getItem('lj_wr');
-    let lastTime = localStorage.getItem('lj_time');
-    
     // Восстановление последнего сигнала
     let lastCoeff = localStorage.getItem('lj_last_coeff');
     let lastConf = localStorage.getItem('lj_last_conf');
 
-    let currentEarn = savedEarn ? parseInt(savedEarn) : randInt(1100, 1600);
-    let currentWR = savedWR ? savedWR : randInt(89, 94) + '%';
-    
-    if (lastTime) {
-      const secondsPassed = Math.floor((Date.now() - parseInt(lastTime)) / 1000);
-      currentEarn += Math.floor((secondsPassed / 20) * randInt(4, 10));
-    }
-
-    earnEl.textContent = '$' + currentEarn.toLocaleString();
-    wrEl.textContent = currentWR;
-
-    // Отображаем сохраненный сигнал, если он был
     if (lastCoeff && lastConf) {
       coeffEl.textContent = 'x' + lastCoeff;
       coeffEl.classList.add('visible');
       confFill.style.width = lastConf + '%';
       confPct.textContent = lastConf + '%';
+      labelEl.textContent = 'Сигнал получен';
       hintEl.innerHTML = 'Забирай на <strong>x' + lastCoeff + '</strong>';
       document.getElementById('resultBlock').classList.add('visible');
       signalActive = true;
     }
-    
-    localStorage.setItem('lj_earn', currentEarn);
-    localStorage.setItem('lj_wr', currentWR);
-    localStorage.setItem('lj_time', Date.now());
-
-    setInterval(() => {
-      currentEarn += randInt(2, 8);
-      earnEl.textContent = '$' + currentEarn.toLocaleString();
-      localStorage.setItem('lj_earn', currentEarn);
-      localStorage.setItem('lj_time', Date.now());
-    }, 8000);
   }
 
   function getRealisticCoeff() {
     const chance = Math.random() * 100;
-    if (chance < 20) return rand(1.00, 1.20);
-    if (chance < 60) return rand(1.21, 2.50);
-    if (chance < 85) return rand(2.51, 5.00);
-    if (chance < 97) return rand(5.01, 15.00);
-    return rand(15.01, 45.00);
-  }
-
-  function genUsername() {
-    const names = ['Alex','Maria','Дмитрий','Анна','John','Ahmed','Олег','Иван','Sara','Mike','Карина','Артём','Лена','Tom','Max','Nikita','Влад','Рустам','Ali'];
-    return names[randInt(0, names.length - 1)].slice(0, randInt(2, 4)) + '***';
-  }
-
-  function buildInitialWins() {
-    const container = document.getElementById('lastWins');
-    const timeLabels = ['только что', '1 мин. назад', '2 мин. назад', '3 мин. назад', '4 мин. назад'];
-    timeLabels.forEach(label => {
-      const entry = document.createElement('div');
-      entry.className = 'win-entry';
-      entry.innerHTML = `<div class="win-info"><span class="win-user">👤 ${genUsername()}</span><span class="win-time">${label}</span></div><span class="win-amount">+$${randInt(40, 320)}</span>`;
-      container.appendChild(entry);
-    });
-    // История теперь пустая при старте, как ты и просил.
-  }
-
-  function addNewWin() {
-    const container = document.getElementById('lastWins');
-    if (container.children.length >= 5) container.removeChild(container.lastChild);
-    container.querySelectorAll('.win-time').forEach((span, idx) => {
-      span.textContent = (idx + 1) + ' мин. назад';
-    });
-    const entry = document.createElement('div');
-    entry.className = 'win-entry';
-    entry.innerHTML = `<div class="win-info"><span class="win-user">👤 ${genUsername()}</span><span class="win-time">только что</span></div><span class="win-amount">+$${randInt(30, 280)}</span>`;
-    container.insertBefore(entry, container.firstChild);
+    if (chance < 25) return rand(1.10, 1.50);
+    if (chance < 65) return rand(1.51, 3.00);
+    if (chance < 90) return rand(3.01, 10.00);
+    return rand(10.01, 30.00);
   }
 
   function getSignal() {
     if (signalActive) return;
-    const btn = document.getElementById('btnSignal'), coeff = document.getElementById('signalCoeff'), 
-          cf = document.getElementById('confFill'), cp = document.getElementById('confPct'), rb = document.getElementById('resultBlock');
+    const btn = document.getElementById('btnSignal'), 
+          coeff = document.getElementById('signalCoeff'), 
+          cf = document.getElementById('confFill'), 
+          cp = document.getElementById('confPct'), 
+          rb = document.getElementById('resultBlock'),
+          label = document.querySelector('.signal-label');
 
     btn.classList.add('loading'); btn.disabled = true;
     coeff.classList.remove('visible'); rb.classList.remove('visible');
+    label.textContent = 'Анализируем...';
 
     setTimeout(() => {
       const c = getRealisticCoeff(); 
-      const confidence = randInt(85, 98);
+      const confidence = randInt(88, 99);
       const cFixed = c.toFixed(2);
 
       coeff.textContent = 'x' + cFixed;
       coeff.classList.add('visible');
       cf.style.width = confidence + '%';
       cp.textContent = confidence + '%';
+      label.textContent = 'Сигнал получен';
       document.getElementById('signalHint').innerHTML = 'Забирай на <strong>x' + cFixed + '</strong>';
       
-      // Сохраняем в localStorage
       localStorage.setItem('lj_last_coeff', cFixed);
       localStorage.setItem('lj_last_conf', confidence);
 
       btn.classList.remove('loading'); btn.disabled = false;
       signalActive = true;
-      setTimeout(() => rb.classList.add('visible'), 500);
+      setTimeout(() => rb.classList.add('visible'), 400);
 
+      // Добавляем в историю
       const bar = document.getElementById('historyBar'), chip = document.createElement('div');
       chip.className = 'history-chip' + (c >= 10 ? ' mega' : c >= 2 ? ' high' : '');
       chip.textContent = cFixed + 'x';
       bar.insertBefore(chip, bar.firstChild);
-      if (bar.children.length > 15) bar.removeChild(bar.lastChild);
-    }, randInt(1200, 2200));
+      if (bar.children.length > 10) bar.removeChild(bar.lastChild);
+    }, randInt(1500, 2500));
   }
 
   function recordResult(won) {
     signalActive = false;
-    // Очищаем сохраненный сигнал после ответа
     localStorage.removeItem('lj_last_coeff');
     localStorage.removeItem('lj_last_conf');
 
     document.getElementById('resultBlock').classList.remove('visible');
+    document.querySelector('.signal-label').textContent = 'Сигнал — ожидание';
+    document.getElementById('signalHint').textContent = 'Нажми кнопку для получения сигнала';
+    
     if (won) streak++; else streak = 0;
-    results.push(won); if (results.length > 8) results.shift();
+    results.push(won); if (results.length > 10) results.shift();
+
     const sb = document.getElementById('streakBar');
     sb.classList.add('visible');
     document.getElementById('streakCount').textContent = streak;
+    
     const si = document.getElementById('streakIcons'); si.innerHTML = '';
     results.forEach(w => {
       const d = document.createElement('div'); d.className = 'streak-dot ' + (w ? 'win' : 'lose');
       si.appendChild(d);
     });
-    document.getElementById('signalHint').textContent = 'Нажми кнопку для получения сигнала';
   }
 
-  initStats();
-  buildInitialWins();
-  setInterval(addNewWin, randInt(25000, 45000));
+  initApp();
 </script>
 </body>
 </html>
