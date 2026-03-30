@@ -40,185 +40,75 @@
       radial-gradient(ellipse 600px 400px at 50% 30%, rgba(168,85,247,0.12) 0%, transparent 70%),
       radial-gradient(ellipse 300px 300px at 80% 70%, rgba(139,131,168,0.06) 0%, transparent 70%);
     pointer-events: none;
-    z-index: 0;
   }
 
   .container {
-    position: relative;
-    z-index: 1;
-    max-width: 420px;
-    margin: 0 auto;
+    position: relative; z-index: 1;
+    max-width: 420px; margin: 0 auto;
     padding: 20px 16px 40px;
   }
 
-  /* ===== Header ===== */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
-
-  .logo {
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: -0.5px;
-  }
+  /* Header */
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .logo { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
   .logo span { color: var(--accent-glow); }
 
   .badge-live {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(34,197,94,0.15);
-    border: 1px solid rgba(34,197,94,0.3);
-    border-radius: 20px;
-    padding: 5px 14px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--green);
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 20px; padding: 5px 14px;
+    font-size: 12px; font-weight: 600; color: var(--green);
   }
   .badge-live::before {
-    content: '';
-    width: 7px; height: 7px;
-    background: var(--green);
-    border-radius: 50%;
+    content: ''; width: 7px; height: 7px;
+    background: var(--green); border-radius: 50%;
     animation: pulse-dot 1.5s ease-in-out infinite;
   }
-
   @keyframes pulse-dot {
     0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
     50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
   }
 
-  /* ===== Stats ticker (Online removed) ===== */
+  /* Stats */
   .stats-ticker {
-    background: var(--surface);
-    border: 1px solid rgba(168,85,247,0.15);
-    border-radius: 14px;
-    padding: 14px 18px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
+    background: var(--surface); border: 1px solid rgba(168,85,247,0.15);
+    border-radius: 14px; padding: 14px 18px; margin-bottom: 20px;
+    display: flex; justify-content: space-between; gap: 12px;
   }
+  .stat-item { text-align: center; flex: 1; }
+  .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--green); }
+  .stat-label { font-size: 11px; color: var(--text-dim); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  .stat-item {
-    text-align: center;
-    flex: 1;
-  }
-  .stat-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--green);
-  }
-  .stat-label {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* ===== History bar ===== */
-  .history-bar {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 24px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    scrollbar-width: none;
-    min-height: 28px;
-  }
+  /* History */
+  .history-bar { display: flex; gap: 6px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; min-height: 28px; }
   .history-bar::-webkit-scrollbar { display: none; }
+  .history-chip { flex-shrink: 0; padding: 5px 10px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; background: var(--surface2); color: var(--text-dim); border: 1px solid transparent; }
+  .history-chip.high { background: rgba(168,85,247,0.2); color: var(--accent-glow); border-color: rgba(168,85,247,0.3); }
+  .history-chip.mega { background: rgba(251,191,36,0.15); color: var(--gold); border-color: rgba(251,191,36,0.3); }
 
-  .history-chip {
-    flex-shrink: 0;
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    background: var(--surface2);
-    color: var(--text-dim);
-    border: 1px solid transparent;
-  }
-  .history-chip.high {
-    background: rgba(168,85,247,0.2);
-    color: var(--accent-glow);
-    border-color: rgba(168,85,247,0.3);
-  }
-  .history-chip.mega {
-    background: rgba(251,191,36,0.15);
-    color: var(--gold);
-    border-color: rgba(251,191,36,0.3);
-  }
-
-  /* ===== Signal card ===== */
-  .signal-card {
-    background: var(--surface);
-    border: 1px solid rgba(168,85,247,0.2);
-    border-radius: 20px;
-    padding: 28px 24px;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .signal-card::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: conic-gradient(from 0deg, transparent 0deg, rgba(168,85,247,0.08) 60deg, transparent 120deg);
-    animation: rotate-bg 8s linear infinite;
-    pointer-events: none;
-  }
+  /* Signal Card */
+  .signal-card { background: var(--surface); border: 1px solid rgba(168,85,247,0.2); border-radius: 20px; padding: 28px 24px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; }
+  .signal-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent 0deg, rgba(168,85,247,0.08) 60deg, transparent 120deg); animation: rotate-bg 8s linear infinite; pointer-events: none; }
   @keyframes rotate-bg { to { transform: rotate(360deg); } }
-
   .signal-card > * { position: relative; z-index: 1; }
-
-  .signal-label {
-    font-size: 12px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-  }
-
-  .signal-coeff {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 56px;
-    font-weight: 700;
-    color: var(--accent-glow);
-    text-shadow: 0 0 40px rgba(168,85,247,0.4);
-    line-height: 1;
-    margin-bottom: 6px;
-    opacity: 0;
-    transform: scale(0.5);
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
+  .signal-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .signal-coeff { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 700; color: var(--accent-glow); text-shadow: 0 0 40px rgba(168,85,247,0.4); line-height: 1; margin-bottom: 6px; opacity: 0; transform: scale(0.5); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
   .signal-coeff.visible { opacity: 1; transform: scale(1); }
-
-  .signal-hint { font-size: 13px; color: var(--text-dim); margin-top: 12px; }
-  .signal-hint strong { color: var(--green); }
-
-  /* ===== Confidence ===== */
+  
   .confidence { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
   .confidence-bar-bg { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
   .confidence-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green), var(--green-glow)); width: 0%; transition: width 1s ease; }
   .confidence-pct { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--green); min-width: 38px; text-align: right; }
+  .signal-hint { font-size: 13px; color: var(--text-dim); margin-top: 12px; }
+  .signal-hint strong { color: var(--green); }
 
-  /* ===== Result feedback ===== */
+  /* Results & Streak */
   .result-block { display: none; gap: 10px; margin-bottom: 20px; }
   .result-block.visible { display: flex; }
   .result-btn { flex: 1; padding: 14px; border: none; border-radius: 14px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .result-btn:active { transform: scale(0.96); }
   .result-btn.win { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
   .result-btn.lose { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
 
-  /* ===== Streak ===== */
   .streak-bar { background: var(--surface); border: 1px solid rgba(34,197,94,0.15); border-radius: 14px; padding: 12px 18px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between; }
   .streak-bar.visible { display: flex; }
   .streak-text { font-size: 13px; color: var(--text-dim); }
@@ -228,25 +118,22 @@
   .streak-dot.win { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
   .streak-dot.lose { background: var(--red); border-color: var(--red); }
 
-  /* ===== Get signal btn ===== */
+  /* Button */
   .btn-signal { width: 100%; padding: 18px; border: none; border-radius: 16px; font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), #7c3aed); box-shadow: 0 4px 24px rgba(168,85,247,0.3); transition: all 0.25s; text-transform: uppercase; letter-spacing: 1px; }
-  .btn-signal:active { transform: scale(0.98); }
-  .btn-signal:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-signal .loader { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
   .btn-signal.loading .loader { display: inline-block; }
   .btn-signal.loading .btn-text { display: none; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ===== Last wins (Restored structure) ===== */
+  /* Wins Feed */
   .last-wins { margin-top: 24px; }
   .last-wins-title { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
   .win-entry { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--surface); border-radius: 12px; margin-bottom: 8px; animation: slideIn 0.4s ease-out; }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  
   .win-info { display: flex; flex-direction: column; gap: 2px; }
   .win-user { font-size: 13px; font-weight: 600; color: var(--text); }
   .win-time { font-size: 11px; color: var(--text-dim); }
   .win-amount { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--green); }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
@@ -264,7 +151,7 @@
     </div>
     <div class="stat-item">
       <div class="stat-value" id="winRate">0%</div>
-      <div class="stat-label">Точность ИИ</div>
+      <div class="stat-label">Винрейт</div>
     </div>
   </div>
 
@@ -274,9 +161,7 @@
     <div class="signal-label">Сигнал — забери на</div>
     <div class="signal-coeff" id="signalCoeff">—</div>
     <div class="confidence">
-      <div class="confidence-bar-bg">
-        <div class="confidence-bar-fill" id="confFill"></div>
-      </div>
+      <div class="confidence-bar-bg"><div class="confidence-bar-fill" id="confFill"></div></div>
       <div class="confidence-pct" id="confPct">—</div>
     </div>
     <div class="signal-hint" id="signalHint">Нажми кнопку для получения сигнала</div>
@@ -308,43 +193,62 @@
   const rand = (min, max) => Math.random() * (max - min) + min;
   const randInt = (min, max) => Math.floor(rand(min, max + 1));
 
+  function initStats() {
+    const earnEl = document.getElementById('todayEarnings');
+    const wrEl = document.getElementById('winRate');
+    
+    let savedEarn = localStorage.getItem('lj_earn');
+    let savedWR = localStorage.getItem('lj_wr');
+    let lastTime = localStorage.getItem('lj_time');
+    
+    let currentEarn = savedEarn ? parseInt(savedEarn) : randInt(9000, 11000);
+    // Делаем винрейт статичным, чтобы не менялся при перезагрузке
+    let currentWR = savedWR ? savedWR : randInt(94, 98) + '%';
+    
+    if (lastTime) {
+      const secondsPassed = Math.floor((Date.now() - parseInt(lastTime)) / 1000);
+      const growth = Math.floor((secondsPassed / 10) * randInt(8, 15));
+      currentEarn += growth;
+    }
+
+    earnEl.textContent = '$' + currentEarn.toLocaleString();
+    wrEl.textContent = currentWR;
+    
+    // Сохраняем начальные/обновленные данные
+    localStorage.setItem('lj_earn', currentEarn);
+    localStorage.setItem('lj_wr', currentWR);
+    localStorage.setItem('lj_time', Date.now());
+
+    setInterval(() => {
+      currentEarn += randInt(10, 25);
+      earnEl.textContent = '$' + currentEarn.toLocaleString();
+      localStorage.setItem('lj_earn', currentEarn);
+      localStorage.setItem('lj_time', Date.now());
+    }, 5000);
+  }
+
   function genCoeff() {
     const r = Math.random();
-    if (r < 0.55) return rand(1.2, 2.5);
-    if (r < 0.85) return rand(2.5, 6.0);
-    return rand(6.0, 15.0);
+    if (r < 0.55) return rand(1.2, 2.3);
+    if (r < 0.85) return rand(2.3, 5.0);
+    return rand(5.0, 12.0);
   }
 
   function genUsername() {
-    const names = ['Alex','Maria','Дмитрий','Анна','John','Pedro','Ahmed','Олег','Иван','Sara','Mike','Карина','Артём','Лена','Tom','Max','Nikita','Влад','Рустам','Ali'];
+    const names = ['Alex','Maria','Дмитрий','Анна','John','Ahmed','Олег','Иван','Sara','Mike','Карина','Артём','Лена','Tom','Max','Nikita','Влад','Рустам','Ali'];
     return names[randInt(0, names.length - 1)].slice(0, randInt(2, 4)) + '***';
-  }
-
-  function initStats() {
-    document.getElementById('todayEarnings').textContent = '$' + randInt(8000, 18000).toLocaleString();
-    document.getElementById('winRate').textContent = randInt(92, 98) + '%';
-    setInterval(() => {
-      const el = document.getElementById('todayEarnings');
-      let v = parseInt(el.textContent.replace(/[$,]/g, ''));
-      v += randInt(15, 60);
-      el.textContent = '$' + v.toLocaleString();
-    }, 4000);
   }
 
   function addWinEntry(isInitial = false) {
     const container = document.getElementById('lastWins');
-    const amount = randInt(15, 650);
-    const timeLabels = ['только что', '1 мин. назад', '2 мин. назад'];
-    const time = isInitial ? timeLabels[randInt(1, 2)] : 'только что';
-    
     const entry = document.createElement('div');
     entry.className = 'win-entry';
     entry.innerHTML = `
       <div class="win-info">
         <span class="win-user">👤 ${genUsername()}</span>
-        <span class="win-time">${time}</span>
+        <span class="win-time">${isInitial ? randInt(1, 4) + ' мин. назад' : 'только что'}</span>
       </div>
-      <span class="win-amount">+$${amount}</span>
+      <span class="win-amount">+$${randInt(50, 450)}</span>
     `;
     container.insertBefore(entry, container.firstChild);
     if (container.children.length > 5) container.removeChild(container.lastChild);
@@ -353,19 +257,18 @@
   function getSignal() {
     if (signalActive) return;
     const btn = document.getElementById('btnSignal'), coeff = document.getElementById('signalCoeff'), 
-          hint = document.getElementById('signalHint'), cf = document.getElementById('confFill'), 
-          cp = document.getElementById('confPct'), rb = document.getElementById('resultBlock');
+          cf = document.getElementById('confFill'), cp = document.getElementById('confPct'), rb = document.getElementById('resultBlock');
 
     btn.classList.add('loading'); btn.disabled = true;
     coeff.classList.remove('visible'); rb.classList.remove('visible');
 
     setTimeout(() => {
-      const c = genCoeff(), confidence = randInt(85, 99);
+      const c = genCoeff(), confidence = randInt(88, 99);
       coeff.textContent = 'x' + c.toFixed(2);
       coeff.classList.add('visible');
       cf.style.width = confidence + '%';
       cp.textContent = confidence + '%';
-      hint.innerHTML = 'Забирай на <strong>x' + c.toFixed(2) + '</strong>';
+      document.getElementById('signalHint').innerHTML = 'Забирай на <strong>x' + c.toFixed(2) + '</strong>';
       btn.classList.remove('loading'); btn.disabled = false;
       signalActive = true;
       setTimeout(() => rb.classList.add('visible'), 500);
@@ -381,7 +284,7 @@
   function recordResult(won) {
     signalActive = false;
     document.getElementById('resultBlock').classList.remove('visible');
-    if (won) { streak++; if (Math.random() < 0.2) streak += randInt(1, 2); } else { streak = 0; }
+    if (won) { streak++; } else { streak = 0; }
     results.push(won); if (results.length > 8) results.shift();
 
     const sb = document.getElementById('streakBar');
@@ -392,13 +295,11 @@
       const d = document.createElement('div'); d.className = 'streak-dot ' + (w ? 'win' : 'lose');
       si.appendChild(d);
     });
-    document.getElementById('signalHint').innerHTML = won ? '🎉 Сигнал подтвержден!' : '💡 Следуй стратегии x2';
   }
 
-  // Init
   initStats();
   for(let i=0; i<4; i++) addWinEntry(true);
-  setInterval(addWinEntry, randInt(10000, 20000)); // Замедленный спам
+  setInterval(addWinEntry, randInt(12000, 25000));
 </script>
 </body>
 </html>
