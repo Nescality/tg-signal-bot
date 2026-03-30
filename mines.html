@@ -213,10 +213,6 @@
       <div class="stat-lbl">Сегодня</div>
     </div>
     <div class="stat-card">
-      <div class="stat-val green" id="sOnl">0</div>
-      <div class="stat-lbl">Онлайн</div>
-    </div>
-    <div class="stat-card">
       <div class="stat-val" id="sWr">0%</div>
       <div class="stat-lbl">Винрейт</div>
     </div>
@@ -260,7 +256,7 @@
 <script>
   let streak=0, results=[], active=false, traps=3;
   const r=(a,b)=>Math.random()*(b-a)+a, ri=(a,b)=>Math.floor(r(a,b+1));
-  const names=['Alex','Maria','Дима','Анна','John','Pedro','Олег','Карина','Max','Влад','Рустам','Ali','Sara','Артём','Tom','Nikita']; //bb
+  const names=['Alex','Maria','Дима','Анна','John','Pedro','Олег','Карина','Max','Влад','Рустам','Ali','Sara','Артём','Tom','Nikita'];
   const gn=()=>names[ri(0,names.length-1)].slice(0,ri(2,4))+'***';
 
   // Build grid
@@ -283,9 +279,7 @@
 
   function init() {
     document.getElementById('sEarn').textContent = '$' + ri(7000, 15000).toLocaleString();
-    document.getElementById('sOnl').textContent = ri(600, 2200).toLocaleString();
     document.getElementById('sWr').textContent = ri(87, 95) + '%';
-    setInterval(() => { let e = document.getElementById('sOnl'), v = parseInt(e.textContent.replace(/,/g, '')); e.textContent = (v + ri(-8, 12)).toLocaleString(); }, 5000);
     setInterval(() => { let e = document.getElementById('sEarn'), v = parseInt(e.textContent.replace(/[$,]/g, '')); e.textContent = '$' + (v + ri(10, 70)).toLocaleString(); }, 3000);
     buildGrid();
     for (let i = 0; i < 4; i++) addWin();
@@ -354,7 +348,7 @@
     document.getElementById('strCnt').textContent = streak;
     const sd = document.getElementById('strDots'); sd.innerHTML = '';
     results.slice(-8).forEach(x => { const d = document.createElement('div'); d.className = 's-dot ' + (x ? 'w' : 'l'); sd.appendChild(d); });
-    document.getElementById('gridInfo').innerHTML = w ? '🎉 <strong>Отлично!</strong> Серия: ' + streak : '💡 Удвой ставку (x2) для покрытия'; //double
+    document.getElementById('gridInfo').innerHTML = w ? '🎉 <strong>Отлично!</strong> Серия: ' + streak : '💡 Удвой ставку (x2) для покрытия';
   }
 
   init();
