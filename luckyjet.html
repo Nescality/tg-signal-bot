@@ -91,7 +91,7 @@
     50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
   }
 
-  /* ===== Stats ticker ===== */
+  /* ===== Stats ticker (Online removed) ===== */
   .stats-ticker {
     background: var(--surface);
     border: 1px solid rgba(168,85,247,0.15);
@@ -100,7 +100,7 @@
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
   }
 
   .stat-item {
@@ -109,13 +109,12 @@
   }
   .stat-value {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--green);
   }
-  .stat-value.gold { color: var(--gold); }
   .stat-label {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text-dim);
     margin-top: 3px;
     text-transform: uppercase;
@@ -130,7 +129,7 @@
     overflow-x: auto;
     padding-bottom: 4px;
     scrollbar-width: none;
-    min-height: 28px; /* Чтобы блок не схлопывался, когда он пустой */
+    min-height: 28px;
   }
   .history-bar::-webkit-scrollbar { display: none; }
 
@@ -144,7 +143,6 @@
     background: var(--surface2);
     color: var(--text-dim);
     border: 1px solid transparent;
-    transition: all 0.3s;
   }
   .history-chip.high {
     background: rgba(168,85,247,0.2);
@@ -177,9 +175,7 @@
     animation: rotate-bg 8s linear infinite;
     pointer-events: none;
   }
-  @keyframes rotate-bg {
-    to { transform: rotate(360deg); }
-  }
+  @keyframes rotate-bg { to { transform: rotate(360deg); } }
 
   .signal-card > * { position: relative; z-index: 1; }
 
@@ -203,205 +199,54 @@
     transform: scale(0.5);
     transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .signal-coeff.visible {
-    opacity: 1;
-    transform: scale(1);
-  }
+  .signal-coeff.visible { opacity: 1; transform: scale(1); }
 
-  .signal-hint {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-top: 12px;
-  }
+  .signal-hint { font-size: 13px; color: var(--text-dim); margin-top: 12px; }
   .signal-hint strong { color: var(--green); }
 
+  /* ===== Confidence ===== */
+  .confidence { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .confidence-bar-bg { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .confidence-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green), var(--green-glow)); width: 0%; transition: width 1s ease; }
+  .confidence-pct { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--green); min-width: 38px; text-align: right; }
+
   /* ===== Result feedback ===== */
-  .result-block {
-    display: none;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  .result-block.visible {
-    display: flex;
-  }
-
-  .result-btn {
-    flex: 1;
-    padding: 14px;
-    border: none;
-    border-radius: 14px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
+  .result-block { display: none; gap: 10px; margin-bottom: 20px; }
+  .result-block.visible { display: flex; }
+  .result-btn { flex: 1; padding: 14px; border: none; border-radius: 14px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .result-btn:active { transform: scale(0.96); }
-
-  .result-btn.win {
-    background: rgba(34,197,94,0.15);
-    color: var(--green);
-    border: 1px solid rgba(34,197,94,0.3);
-  }
-  .result-btn.win:hover { background: rgba(34,197,94,0.25); }
-
-  .result-btn.lose {
-    background: rgba(239,68,68,0.15);
-    color: var(--red);
-    border: 1px solid rgba(239,68,68,0.3);
-  }
-  .result-btn.lose:hover { background: rgba(239,68,68,0.25); }
+  .result-btn.win { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .result-btn.lose { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
 
   /* ===== Streak ===== */
-  .streak-bar {
-    background: var(--surface);
-    border: 1px solid rgba(34,197,94,0.15);
-    border-radius: 14px;
-    padding: 12px 18px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    display: none;
-  }
+  .streak-bar { background: var(--surface); border: 1px solid rgba(34,197,94,0.15); border-radius: 14px; padding: 12px 18px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between; }
   .streak-bar.visible { display: flex; }
-
-  .streak-text {
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .streak-text strong {
-    color: var(--green);
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .streak-icons {
-    display: flex;
-    gap: 4px;
-  }
-  .streak-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--surface2);
-    border: 1px solid rgba(139,131,168,0.2);
-    transition: all 0.3s;
-  }
+  .streak-text { font-size: 13px; color: var(--text-dim); }
+  .streak-text strong { color: var(--green); font-family: 'JetBrains Mono', monospace; }
+  .streak-icons { display: flex; gap: 4px; }
+  .streak-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface2); border: 1px solid rgba(139,131,168,0.2); }
   .streak-dot.win { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
   .streak-dot.lose { background: var(--red); border-color: var(--red); }
 
   /* ===== Get signal btn ===== */
-  .btn-signal {
-    width: 100%;
-    padding: 18px;
-    border: none;
-    border-radius: 16px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    color: #fff;
-    background: linear-gradient(135deg, var(--accent), #7c3aed);
-    box-shadow: 0 4px 24px rgba(168,85,247,0.3);
-    transition: all 0.25s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-signal:hover {
-    box-shadow: 0 6px 32px rgba(168,85,247,0.45);
-    transform: translateY(-1px);
-  }
+  .btn-signal { width: 100%; padding: 18px; border: none; border-radius: 16px; font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), #7c3aed); box-shadow: 0 4px 24px rgba(168,85,247,0.3); transition: all 0.25s; text-transform: uppercase; letter-spacing: 1px; }
   .btn-signal:active { transform: scale(0.98); }
-  .btn-signal:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .btn-signal .loader {
-    display: none;
-    width: 20px; height: 20px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
+  .btn-signal:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-signal .loader { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
   .btn-signal.loading .loader { display: inline-block; }
   .btn-signal.loading .btn-text { display: none; }
-
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ===== Last wins ===== */
-  .last-wins {
-    margin-top: 24px;
-  }
-  .last-wins-title {
-    font-size: 12px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 10px;
-  }
-
-  .win-entry {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    background: var(--surface);
-    border-radius: 10px;
-    margin-bottom: 6px;
-    animation: slideIn 0.3s ease;
-  }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .win-user {
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .win-amount {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--green);
-  }
-
-  /* ===== Confidence meter ===== */
-  .confidence {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  .confidence-bar-bg {
-    flex: 1;
-    height: 6px;
-    background: var(--surface2);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .confidence-bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: linear-gradient(90deg, var(--green), var(--green-glow));
-    width: 0%;
-    transition: width 1s ease;
-  }
-  .confidence-pct {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--green);
-    min-width: 38px;
-    text-align: right;
-  }
+  /* ===== Last wins (Restored structure) ===== */
+  .last-wins { margin-top: 24px; }
+  .last-wins-title { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+  .win-entry { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--surface); border-radius: 12px; margin-bottom: 8px; animation: slideIn 0.4s ease-out; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  
+  .win-info { display: flex; flex-direction: column; gap: 2px; }
+  .win-user { font-size: 13px; font-weight: 600; color: var(--text); }
+  .win-time { font-size: 11px; color: var(--text-dim); }
+  .win-amount { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--green); }
 </style>
 </head>
 <body>
@@ -418,12 +263,8 @@
       <div class="stat-label">Заработано сегодня</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value gold" id="onlineCount">0</div>
-      <div class="stat-label">Онлайн</div>
-    </div>
-    <div class="stat-item">
       <div class="stat-value" id="winRate">0%</div>
-      <div class="stat-label">Винрейт</div>
+      <div class="stat-label">Точность ИИ</div>
     </div>
   </div>
 
@@ -463,160 +304,101 @@
 </div>
 
 <script>
-  // ===== State =====
-  let streak = 0;
-  let results = [];
-  let signalActive = false;
-
-  // ===== Fake data generators =====
-  function rand(min, max) { return Math.random() * (max - min) + min; }
-  function randInt(min, max) { return Math.floor(rand(min, max + 1)); }
+  let streak = 0, results = [], signalActive = false;
+  const rand = (min, max) => Math.random() * (max - min) + min;
+  const randInt = (min, max) => Math.floor(rand(min, max + 1));
 
   function genCoeff() {
     const r = Math.random();
     if (r < 0.55) return rand(1.2, 2.5);
     if (r < 0.85) return rand(2.5, 6.0);
-    return rand(6.0, 25.0);
+    return rand(6.0, 15.0);
   }
 
   function genUsername() {
     const names = ['Alex','Maria','Дмитрий','Анна','John','Pedro','Ahmed','Олег','Иван','Sara','Mike','Карина','Артём','Лена','Tom','Max','Nikita','Влад','Рустам','Ali'];
-    const name = names[randInt(0, names.length - 1)];
-    return name.slice(0, randInt(2, 4)) + '***';
+    return names[randInt(0, names.length - 1)].slice(0, randInt(2, 4)) + '***';
   }
 
-  // ===== Init stats =====
   function initStats() {
     document.getElementById('todayEarnings').textContent = '$' + randInt(8000, 18000).toLocaleString();
-    document.getElementById('onlineCount').textContent = randInt(1200, 3400).toLocaleString();
-    document.getElementById('winRate').textContent = randInt(87, 94) + '%';
-
-    // Periodically update
-    setInterval(() => {
-      const el = document.getElementById('onlineCount');
-      let v = parseInt(el.textContent.replace(/,/g, ''));
-      v += randInt(-15, 20);
-      el.textContent = v.toLocaleString();
-    }, 5000);
-
+    document.getElementById('winRate').textContent = randInt(92, 98) + '%';
     setInterval(() => {
       const el = document.getElementById('todayEarnings');
       let v = parseInt(el.textContent.replace(/[$,]/g, ''));
-      v += randInt(10, 80);
+      v += randInt(15, 60);
       el.textContent = '$' + v.toLocaleString();
-    }, 3000);
+    }, 4000);
   }
 
-  // ===== Last wins =====
-  function addFakeWin() {
+  function addWinEntry(isInitial = false) {
     const container = document.getElementById('lastWins');
-    const amount = rand(5, 500).toFixed(0);
+    const amount = randInt(15, 650);
+    const timeLabels = ['только что', '1 мин. назад', '2 мин. назад'];
+    const time = isInitial ? timeLabels[randInt(1, 2)] : 'только что';
+    
     const entry = document.createElement('div');
     entry.className = 'win-entry';
     entry.innerHTML = `
-      <span class="win-user">👤 ${genUsername()}</span>
+      <div class="win-info">
+        <span class="win-user">👤 ${genUsername()}</span>
+        <span class="win-time">${time}</span>
+      </div>
       <span class="win-amount">+$${amount}</span>
     `;
     container.insertBefore(entry, container.firstChild);
     if (container.children.length > 5) container.removeChild(container.lastChild);
   }
 
-  function initLastWins() {
-    for (let i = 0; i < 4; i++) addFakeWin();
-    setInterval(addFakeWin, randInt(4000, 8000));
-  }
-
-  // ===== Get signal =====
   function getSignal() {
     if (signalActive) return;
-    const btn = document.getElementById('btnSignal');
-    const coeff = document.getElementById('signalCoeff');
-    const hint = document.getElementById('signalHint');
-    const confFill = document.getElementById('confFill');
-    const confPct = document.getElementById('confPct');
-    const resultBlock = document.getElementById('resultBlock');
+    const btn = document.getElementById('btnSignal'), coeff = document.getElementById('signalCoeff'), 
+          hint = document.getElementById('signalHint'), cf = document.getElementById('confFill'), 
+          cp = document.getElementById('confPct'), rb = document.getElementById('resultBlock');
 
-    btn.classList.add('loading');
-    btn.disabled = true;
-    coeff.classList.remove('visible');
-    resultBlock.classList.remove('visible');
+    btn.classList.add('loading'); btn.disabled = true;
+    coeff.classList.remove('visible'); rb.classList.remove('visible');
 
-    // Simulate analysis
     setTimeout(() => {
-      const c = genCoeff();
-      const confidence = randInt(78, 96);
-
+      const c = genCoeff(), confidence = randInt(85, 99);
       coeff.textContent = 'x' + c.toFixed(2);
       coeff.classList.add('visible');
-      confFill.style.width = confidence + '%';
-      confPct.textContent = confidence + '%';
-      hint.innerHTML = 'Ставь и забирай на <strong>x' + c.toFixed(2) + '</strong>';
-
-      btn.classList.remove('loading');
-      btn.disabled = false;
+      cf.style.width = confidence + '%';
+      cp.textContent = confidence + '%';
+      hint.innerHTML = 'Забирай на <strong>x' + c.toFixed(2) + '</strong>';
+      btn.classList.remove('loading'); btn.disabled = false;
       signalActive = true;
+      setTimeout(() => rb.classList.add('visible'), 500);
 
-      // Show result buttons
-      setTimeout(() => {
-        resultBlock.classList.add('visible');
-      }, 500);
-
-      // Add to history
-      const bar = document.getElementById('historyBar');
-      const chip = document.createElement('div');
-      chip.className = 'history-chip' + (c >= 5 ? ' mega' : c >= 2.5 ? ' high' : '');
+      const bar = document.getElementById('historyBar'), chip = document.createElement('div');
+      chip.className = 'history-chip' + (c >= 5 ? ' mega' : c >= 2 ? ' high' : '');
       chip.textContent = c.toFixed(2) + 'x';
       bar.insertBefore(chip, bar.firstChild);
-      if (bar.children.length > 20) bar.removeChild(bar.lastChild);
-
+      if (bar.children.length > 15) bar.removeChild(bar.lastChild);
     }, randInt(1500, 2500));
   }
 
-  // ===== Record result =====
   function recordResult(won) {
     signalActive = false;
-    const resultBlock = document.getElementById('resultBlock');
-    const streakBar = document.getElementById('streakBar');
-    const streakCount = document.getElementById('streakCount');
-    const streakIcons = document.getElementById('streakIcons');
+    document.getElementById('resultBlock').classList.remove('visible');
+    if (won) { streak++; if (Math.random() < 0.2) streak += randInt(1, 2); } else { streak = 0; }
+    results.push(won); if (results.length > 8) results.shift();
 
-    resultBlock.classList.remove('visible');
-
-    if (won) {
-      streak++;
-      // Bias toward wins in display (always show high streak)
-      if (Math.random() < 0.3) streak = Math.max(streak, randInt(3, 7));
-    } else {
-      streak = 0;
-    }
-
-    results.push(won);
-    if (results.length > 10) results.shift();
-
-    // Update streak bar
-    streakBar.classList.add('visible');
-    streakCount.textContent = streak;
-
-    streakIcons.innerHTML = '';
-    const show = results.slice(-8);
-    show.forEach(w => {
-      const dot = document.createElement('div');
-      dot.className = 'streak-dot ' + (w ? 'win' : 'lose');
-      streakIcons.appendChild(dot);
+    const sb = document.getElementById('streakBar');
+    sb.classList.add('visible');
+    document.getElementById('streakCount').textContent = streak;
+    const si = document.getElementById('streakIcons'); si.innerHTML = '';
+    results.forEach(w => {
+      const d = document.createElement('div'); d.className = 'streak-dot ' + (w ? 'win' : 'lose');
+      si.appendChild(d);
     });
-
-    // Update hint
-    const hint = document.getElementById('signalHint');
-    if (won) {
-      hint.innerHTML = '🎉 <strong>Отлично!</strong> Серия побед: ' + streak;
-    } else {
-      hint.innerHTML = '💡 Удвой ставку (x2) для покрытия';
-    }
+    document.getElementById('signalHint').innerHTML = won ? '🎉 Сигнал подтвержден!' : '💡 Следуй стратегии x2';
   }
 
-  // ===== Init =====
+  // Init
   initStats();
-  initLastWins();
+  for(let i=0; i<4; i++) addWinEntry(true);
+  setInterval(addWinEntry, randInt(10000, 20000)); // Замедленный спам
 </script>
 </body>
 </html>
