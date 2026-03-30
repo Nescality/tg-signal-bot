@@ -184,13 +184,12 @@
   const rand = (min, max) => Math.random() * (max - min) + min;
   const randInt = (min, max) => Math.floor(rand(min, max + 1));
 
-  // Реалистичная генерация коэффициентов
   function genCoeff() {
     const r = Math.random() * 100;
-    if (r < 25) return rand(1.00, 1.25);  // Сливы (как в 1win)
-    if (r < 65) return rand(1.26, 2.50);  // Стандарт
-    if (r < 90) return rand(2.51, 6.00);  // Хорошие
-    return rand(6.01, 15.00);             // Редкие
+    if (r < 25) return rand(1.00, 1.25);
+    if (r < 65) return rand(1.26, 2.50);
+    if (r < 90) return rand(2.51, 6.00);
+    return rand(6.01, 15.00);
   }
 
   const names = ['Alex','Maria','Дима','Анна','John','Pedro','Ahmed','Олег','Иван','Sara','Mike','Карина','Артём','Лена','Tom','Max','Nikita','Влад','Рустам','Ali'];
@@ -200,7 +199,6 @@
     const earnEl = document.getElementById('todayEarnings');
     const wrEl = document.getElementById('winRate');
     
-    // Сохранение суммы в памяти
     let savedEarn = localStorage.getItem('rq_earn');
     let savedWR = localStorage.getItem('rq_wr');
     let lastUpdate = localStorage.getItem('rq_last_time');
@@ -208,10 +206,9 @@
     let currentEarn = savedEarn ? parseInt(savedEarn) : randInt(1000, 1500);
     let currentWR = savedWR ? savedWR : randInt(92, 98) + '%';
     
-    // Если прошло время, начисляем "пассивный" доход
     if (lastUpdate) {
       const secondsPassed = Math.floor((Date.now() - parseInt(lastUpdate)) / 1000);
-      const growth = Math.floor((secondsPassed / 300) * randInt(10, 30)); // Рост каждые 5 минут
+      const growth = Math.floor((secondsPassed / 300) * randInt(10, 30));
       currentEarn += growth;
     }
 
@@ -222,96 +219,100 @@
     localStorage.setItem('rq_wr', currentWR);
     localStorage.setItem('rq_last_time', Date.now());
 
-    // Медленный рост каждые 10 секунд для визуала
     setInterval(() => {
       currentEarn += randInt(1, 3);
       earnEl.textContent = '$' + currentEarn.toLocaleString();
       localStorage.setItem('rq_earn', currentEarn);
       localStorage.setItem('rq_last_time', Date.now());
     }, 10000);
-  }
 
-  // Генерация ленты выигрышей в правильном порядке времени
-  function buildInitialWins() {
-    const container = document.getElementById('lastWins');
-    const labels = ['только что', '1 мин. назад', '2 мин. назад', '3 мин. назад', '4 мин. назад'];
-    
-    labels.forEach(label => {
-      const entry = document.createElement('div');
-      entry.className = 'win-entry';
-      entry.innerHTML = `
-        <div class="win-info">
-          <span class="win-user">👤 ${genUsername()}</span>
-          <span class="win-time">${label}</span>
-        </div>
-        <span class="win-amount">+$${randInt(40, 450)}</span>
-      `;
-      container.appendChild(entry);
-    });
-
-    // Заполнение истории реалистичными иксами
-    const bar = document.getElementById('historyBar');
-    for(let i=0; i<12; i++) {
-      const c = genCoeff();
-      const chip = document.createElement('div');
-      chip.className = 'history-chip' + (c >= 5 ? ' mega' : c >= 2 ? ' high' : '');
-      chip.textContent = c.toFixed(2) + 'x';
-      bar.appendChild(chip);
+    // ВОССТАНОВЛЕНИЕ ПОСЛЕДНЕГО КФ
+    const savedLastCoeff = localStorage.getItem('rq_last_coeff');
+    const savedLastConf = localStorage.getItem('rq_last_conf');
+    if (savedLastCoeff && savedLastConf) {
+      showSignalUI(savedLastCoeff, savedLastConf, false); // false чтобы не добавлять в историю второй раз
     }
   }
 
-  // Обновление ленты (сдвиг времени)
+  function buildInitialWins() {
+    const container = document.getElementById('lastWins');
+    const labels = ['только что', '1 мин. назад', '2 мин. назад', '3 мин. назад', '4 мин. назад'];
+    labels.forEach(label => {
+      const entry = document.createElement('div');
+      entry.className = 'win-entry';
+      entry.innerHTML = `<div class="win-info"><span class="win-user">👤 ${genUsername()}</span><span class="win-time">${label}</span></div><span class="win-amount">+$${randInt(40, 450)}</span>`;
+      container.appendChild(entry);
+    });
+    // История пустая при старте
+  }
+
   function rotateWins() {
     const container = document.getElementById('lastWins');
     if (container.children.length >= 5) container.removeChild(container.lastChild);
-    
     const times = container.querySelectorAll('.win-time');
-    times.forEach((span, i) => {
-      span.textContent = (i + 1) + ' мин. назад';
-    });
-
+    times.forEach((span, i) => { span.textContent = (i + 1) + ' мин. назад'; });
     const entry = document.createElement('div');
     entry.className = 'win-entry';
-    entry.innerHTML = `
-      <div class="win-info">
-        <span class="win-user">👤 ${genUsername()}</span>
-        <span class="win-time">только что</span>
-      </div>
-      <span class="win-amount">+$${randInt(50, 400)}</span>
-    `;
+    entry.innerHTML = `<div class="win-info"><span class="win-user">👤 ${genUsername()}</span><span class="win-time">только что</span></div><span class="win-amount">+$${randInt(50, 400)}</span>`;
     container.insertBefore(entry, container.firstChild);
+  }
+
+  function showSignalUI(cValue, confValue, addToHistory = true) {
+    const coeff = document.getElementById('signalCoeff'), 
+          cf = document.getElementById('confFill'), 
+          cp = document.getElementById('confPct'), 
+          rb = document.getElementById('resultBlock');
+
+    coeff.textContent = 'x' + cValue;
+    coeff.classList.add('visible');
+    cf.style.width = confValue + '%';
+    cp.textContent = confValue + '%';
+    document.getElementById('signalHint').innerHTML = 'Забирай на <strong>x' + cValue + '</strong>';
+    signalActive = true;
+    rb.classList.add('visible');
+
+    if (addToHistory) {
+      const bar = document.getElementById('historyBar'), chip = document.createElement('div');
+      const cNum = parseFloat(cValue);
+      chip.className = 'history-chip' + (cNum >= 5 ? ' mega' : cNum >= 2 ? ' high' : '');
+      chip.textContent = cValue + 'x';
+      bar.insertBefore(chip, bar.firstChild);
+      if (bar.children.length > 15) bar.removeChild(bar.lastChild);
+    }
   }
 
   function getSignal() {
     if (signalActive) return;
-    const btn = document.getElementById('btnSignal'), coeff = document.getElementById('signalCoeff'), 
-          cf = document.getElementById('confFill'), cp = document.getElementById('confPct'), rb = document.getElementById('resultBlock');
+    const btn = document.getElementById('btnSignal'), 
+          coeff = document.getElementById('signalCoeff'), 
+          rb = document.getElementById('resultBlock');
 
     btn.classList.add('loading'); btn.disabled = true;
     coeff.classList.remove('visible'); rb.classList.remove('visible');
 
     setTimeout(() => {
       const c = genCoeff(), confidence = randInt(85, 99);
-      coeff.textContent = 'x' + c.toFixed(2);
-      coeff.classList.add('visible');
-      cf.style.width = confidence + '%';
-      cp.textContent = confidence + '%';
-      document.getElementById('signalHint').innerHTML = 'Забирай на <strong>x' + c.toFixed(2) + '</strong>';
-      btn.classList.remove('loading'); btn.disabled = false;
-      signalActive = true;
-      setTimeout(() => rb.classList.add('visible'), 500);
+      const cStr = c.toFixed(2);
+      
+      // Сохраняем в память
+      localStorage.setItem('rq_last_coeff', cStr);
+      localStorage.setItem('rq_last_conf', confidence);
 
-      const bar = document.getElementById('historyBar'), chip = document.createElement('div');
-      chip.className = 'history-chip' + (c >= 5 ? ' mega' : c >= 2 ? ' high' : '');
-      chip.textContent = c.toFixed(2) + 'x';
-      bar.insertBefore(chip, bar.firstChild);
-      if (bar.children.length > 15) bar.removeChild(bar.lastChild);
+      showSignalUI(cStr, confidence, true);
+      
+      btn.classList.remove('loading'); btn.disabled = false;
     }, randInt(1500, 2500));
   }
 
   function recordResult(won) {
     signalActive = false;
+    // Очищаем сохраненный сигнал после нажатия кнопки
+    localStorage.removeItem('rq_last_coeff');
+    localStorage.removeItem('rq_last_conf');
+
     document.getElementById('resultBlock').classList.remove('visible');
+    document.getElementById('signalHint').textContent = 'Нажми кнопку для получения сигнала';
+    
     if (won) streak++; else streak = 0;
     results.push(won); if (results.length > 8) results.shift();
 
