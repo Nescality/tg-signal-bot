@@ -35,13 +35,8 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  .page {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 28px 20px 48px;
-  }
+  .page { max-width: 800px; margin: 0 auto; padding: 28px 20px 48px; }
 
-  /* Header */
   .header {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 28px;
@@ -49,51 +44,35 @@
   .header-left { display: flex; align-items: center; gap: 12px; }
   .header-dot {
     width: 10px; height: 10px; border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 10px rgba(52,211,153,0.4);
+    background: var(--green); box-shadow: 0 0 10px rgba(52,211,153,0.4);
   }
   .header-title { font-size: 18px; font-weight: 800; }
   .header-time { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 
-  /* Period tabs */
   .tabs {
     display: flex; gap: 4px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 4px;
-    margin-bottom: 24px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 4px; margin-bottom: 24px;
   }
   .tab {
-    flex: 1;
-    padding: 8px 4px;
-    text-align: center;
-    font-size: 12px; font-weight: 700;
-    color: var(--text-muted);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none; background: none;
+    flex: 1; padding: 8px 4px; text-align: center;
+    font-size: 12px; font-weight: 700; color: var(--text-muted);
+    border-radius: 8px; cursor: pointer; transition: all 0.2s;
+    border: none; background: none; font-family: 'Manrope', sans-serif;
   }
   .tab:hover { color: var(--text-sec); }
   .tab.active {
-    background: var(--surface2);
-    color: var(--text);
+    background: var(--surface2); color: var(--text);
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
 
-  /* Stat cards */
   .cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin-bottom: 24px;
   }
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 18px 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 18px 16px;
   }
   .card-label {
     font-size: 11px; color: var(--text-muted);
@@ -101,79 +80,53 @@
     letter-spacing: 0.5px; margin-bottom: 6px;
   }
   .card-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 26px; font-weight: 700;
+    font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700;
   }
   .card-value.green { color: var(--green); }
   .card-value.purple { color: var(--purple); }
   .card-value.cyan { color: var(--cyan); }
-  .card-sub {
-    font-size: 11px; color: var(--text-muted);
-    margin-top: 4px; font-weight: 600;
-  }
+  .card-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 600; }
   .card-sub .up { color: var(--green); }
-  .card-sub .down { color: var(--rose); }
 
-  /* Chart container */
   .chart-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px; margin-bottom: 20px;
   }
   .chart-title {
     font-size: 13px; font-weight: 700; margin-bottom: 14px;
     display: flex; align-items: center; gap: 8px;
   }
-  .chart-title .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-  }
+  .chart-title .dot { width: 8px; height: 8px; border-radius: 50%; }
   .chart-title .dot.green { background: var(--green); }
   .chart-title .dot.purple { background: var(--purple); }
-  .chart-wrap {
-    height: 220px;
-    position: relative;
-  }
+  .chart-wrap { height: 220px; position: relative; }
 
-  /* Language breakdown */
   .lang-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px;
   }
-  .lang-title {
-    font-size: 13px; font-weight: 700; margin-bottom: 14px;
-  }
+  .lang-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; }
   .lang-list { display: flex; flex-direction: column; gap: 8px; }
-  .lang-row {
-    display: flex; align-items: center; gap: 10px;
-  }
+  .lang-row { display: flex; align-items: center; gap: 10px; }
   .lang-flag { font-size: 18px; width: 28px; text-align: center; }
   .lang-name { font-size: 13px; font-weight: 600; width: 80px; }
   .lang-bar-bg {
-    flex: 1; height: 8px;
-    background: var(--surface2);
+    flex: 1; height: 8px; background: var(--surface2);
     border-radius: 4px; overflow: hidden;
   }
-  .lang-bar-fill {
-    height: 100%; border-radius: 4px;
-    transition: width 0.6s ease;
-  }
+  .lang-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
   .lang-count {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px; font-weight: 700;
-    color: var(--text-sec);
-    min-width: 40px; text-align: right;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+    color: var(--text-sec); min-width: 40px; text-align: right;
   }
   .lang-pct {
-    font-size: 11px; color: var(--text-muted);
-    min-width: 40px; text-align: right;
+    font-size: 11px; color: var(--text-muted); min-width: 40px; text-align: right;
   }
 
-  /* Responsive */
+  .no-data {
+    text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 14px;
+  }
+
   @media (max-width: 500px) {
     .cards { grid-template-columns: 1fr; }
     .card-value { font-size: 22px; }
@@ -183,7 +136,6 @@
 <body>
 
 <div class="page">
-
   <div class="header">
     <div class="header-left">
       <div class="header-dot"></div>
@@ -192,78 +144,95 @@
     <div class="header-time" id="headerTime"></div>
   </div>
 
-  <!-- Period tabs -->
-  <div class="tabs" id="tabs">
-    <button class="tab" data-period="day">День</button>
-    <button class="tab" data-period="week">Неделя</button>
-    <button class="tab active" data-period="month">Месяц</button>
-    <button class="tab" data-period="half_year">Полгода</button>
-    <button class="tab" data-period="year">Год</button>
-    <button class="tab" data-period="all">Всё</button>
-  </div>
+  <div id="content">
+    <div class="tabs" id="tabs">
+      <button class="tab" data-period="day">День</button>
+      <button class="tab" data-period="week">Неделя</button>
+      <button class="tab active" data-period="month">Месяц</button>
+      <button class="tab" data-period="half_year">Полгода</button>
+      <button class="tab" data-period="year">Год</button>
+      <button class="tab" data-period="all">Всё</button>
+    </div>
 
-  <!-- Stat cards -->
-  <div class="cards">
-    <div class="card">
-      <div class="card-label">Регистрации</div>
-      <div class="card-value green" id="totalUsers">0</div>
-      <div class="card-sub" id="totalSub"></div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Регистрации</div>
+        <div class="card-value green" id="totalUsers">0</div>
+        <div class="card-sub" id="totalSub"></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Верифицировано</div>
+        <div class="card-value purple" id="verifiedUsers">0</div>
+        <div class="card-sub" id="verifiedSub"></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Конверсия</div>
+        <div class="card-value cyan" id="conversion">0%</div>
+        <div class="card-sub">регистрация → верификация</div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-label">Верифицировано</div>
-      <div class="card-value purple" id="verifiedUsers">0</div>
-      <div class="card-sub" id="verifiedSub"></div>
-    </div>
-    <div class="card">
-      <div class="card-label">Конверсия</div>
-      <div class="card-value cyan" id="conversion">0%</div>
-      <div class="card-sub">регистрация → верификация</div>
-    </div>
-  </div>
 
-  <!-- Registration chart -->
-  <div class="chart-section">
-    <div class="chart-title">
-      <span class="dot green"></span>
-      Регистрации по дням
+    <div class="chart-section">
+      <div class="chart-title"><span class="dot green"></span>Регистрации по дням</div>
+      <div class="chart-wrap"><canvas id="regChart"></canvas></div>
     </div>
-    <div class="chart-wrap">
-      <canvas id="regChart"></canvas>
-    </div>
-  </div>
 
-  <!-- Verification chart -->
-  <div class="chart-section">
-    <div class="chart-title">
-      <span class="dot purple"></span>
-      Верификации по дням
+    <div class="chart-section">
+      <div class="chart-title"><span class="dot purple"></span>Верификации по дням</div>
+      <div class="chart-wrap"><canvas id="verChart"></canvas></div>
     </div>
-    <div class="chart-wrap">
-      <canvas id="verChart"></canvas>
+
+    <div class="lang-section">
+      <div class="lang-title">🌐 Распределение по языкам</div>
+      <div class="lang-list" id="langList"></div>
     </div>
   </div>
 
-  <!-- Language breakdown -->
-  <div class="lang-section">
-    <div class="lang-title">🌐 Распределение по языкам</div>
-    <div class="lang-list" id="langList"></div>
+  <div class="no-data" id="noData" style="display:none;">
+    Нет данных. Открой эту ссылку через кнопку в админ-боте.
   </div>
-
 </div>
 
 <script>
-  // ===== DATA (injected by bot) =====
-  const STATS = /*__STATS_JSON__*/;
-  const REG_BY_DAY = /*__REG_BY_DAY_JSON__*/;
-  const VER_BY_DAY = /*__VER_BY_DAY_JSON__*/;
-  const ALL_STATS = /*__ALL_STATS_JSON__*/;
+  // ===== Читаем данные из URL hash =====
+  // Бот генерирует ссылку: https://username.github.io/dashboard/#BASE64_DATA
+  // Здесь мы декодируем base64 → JSON
 
-  // ===== Time =====
+  let DATA = null;
+
+  try {
+    const hash = window.location.hash.slice(1); // убираем #
+    if (hash) {
+      const json = decodeURIComponent(atob(hash));
+      DATA = JSON.parse(json);
+    }
+  } catch (e) {
+    console.error("Ошибка декодирования данных:", e);
+  }
+
+  // Если данных нет — показываем заглушку
+  if (!DATA) {
+    document.getElementById('content').style.display = 'none';
+    document.getElementById('noData').style.display = 'block';
+  }
+
+  // ===== Извлекаем данные =====
+  const STATS = DATA ? DATA.stats : null;
+  const REG_BY_DAY = DATA ? DATA.reg : [];
+  const VER_BY_DAY = DATA ? DATA.ver : [];
+  const ALL_STATS = DATA ? DATA.all : null;
+  const allPeriodStats = DATA ? DATA.periods : {};
+
+  let currentStats = STATS;
+
+  // ===== Время =====
   document.getElementById('headerTime').textContent =
     new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  // ===== Cards =====
+  // ===== Карточки =====
   function updateCards(stats) {
+    if (!stats) return;
+    currentStats = stats;
     document.getElementById('totalUsers').textContent = stats.total.toLocaleString();
     document.getElementById('verifiedUsers').textContent = stats.verified.toLocaleString();
     const conv = stats.total > 0 ? ((stats.verified / stats.total) * 100).toFixed(1) : 0;
@@ -271,16 +240,14 @@
 
     if (ALL_STATS) {
       const pctOfAll = ALL_STATS.total > 0
-        ? ((stats.total / ALL_STATS.total) * 100).toFixed(0) : 0;
+        ? ((stats.total / ALL_STATS.total) * 100).toFixed(0) : 100;
       document.getElementById('totalSub').innerHTML =
         `<span class="up">${pctOfAll}%</span> от общего`;
     }
   }
-  updateCards(STATS);
+  if (STATS) updateCards(STATS);
 
-  // ===== Tabs =====
-  const allPeriodStats = /*__ALL_PERIOD_STATS_JSON__*/;
-
+  // ===== Табы =====
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -288,53 +255,45 @@
       const period = tab.dataset.period;
       if (allPeriodStats[period]) {
         updateCards(allPeriodStats[period]);
-        updateLangs(allPeriodStats[period].langs);
+        updateLangs(allPeriodStats[period].langs, allPeriodStats[period].total);
       }
     });
   });
 
-  // ===== Charts =====
-  const chartColors = {
+  // ===== Графики =====
+  const chartCfg = {
     green: { line: '#34d399', bg: 'rgba(52,211,153,0.08)' },
     purple: { line: '#a78bfa', bg: 'rgba(167,139,250,0.08)' },
   };
 
-  function makeChart(canvasId, data, color) {
-    const ctx = document.getElementById(canvasId).getContext('2d');
+  function makeChart(id, data, color) {
+    if (!data || data.length === 0) return;
+    const ctx = document.getElementById(id).getContext('2d');
     return new Chart(ctx, {
       type: 'line',
       data: {
         labels: data.map(d => {
-          const date = new Date(d.date);
-          return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+          const dt = new Date(d.date);
+          return dt.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
         }),
         datasets: [{
           data: data.map(d => d.count),
-          borderColor: chartColors[color].line,
-          backgroundColor: chartColors[color].bg,
-          borderWidth: 2,
-          fill: true,
-          tension: 0.35,
-          pointRadius: 3,
-          pointHoverRadius: 6,
-          pointBackgroundColor: chartColors[color].line,
-          pointBorderColor: '#0a0a10',
-          pointBorderWidth: 2,
+          borderColor: chartCfg[color].line,
+          backgroundColor: chartCfg[color].bg,
+          borderWidth: 2, fill: true, tension: 0.35,
+          pointRadius: 3, pointHoverRadius: 6,
+          pointBackgroundColor: chartCfg[color].line,
+          pointBorderColor: '#0a0a10', pointBorderWidth: 2,
         }],
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#1a1a28',
-            titleColor: '#e8e6f0',
-            bodyColor: '#e8e6f0',
-            borderColor: 'rgba(255,255,255,0.1)',
-            borderWidth: 1,
-            padding: 10,
-            cornerRadius: 8,
+            backgroundColor: '#1a1a28', titleColor: '#e8e6f0', bodyColor: '#e8e6f0',
+            borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+            padding: 10, cornerRadius: 8,
             titleFont: { family: 'Manrope', weight: '700' },
             bodyFont: { family: 'JetBrains Mono', weight: '700' },
           },
@@ -342,43 +301,28 @@
         scales: {
           x: {
             grid: { color: 'rgba(255,255,255,0.03)' },
-            ticks: {
-              color: '#4a4860', font: { family: 'Manrope', size: 10, weight: '600' },
-              maxRotation: 0, maxTicksLimit: 10,
-            },
+            ticks: { color: '#4a4860', font: { family: 'Manrope', size: 10, weight: '600' }, maxRotation: 0, maxTicksLimit: 10 },
             border: { display: false },
           },
           y: {
             grid: { color: 'rgba(255,255,255,0.03)' },
-            ticks: {
-              color: '#4a4860', font: { family: 'JetBrains Mono', size: 10, weight: '600' },
-              stepSize: 1,
-            },
-            border: { display: false },
-            beginAtZero: true,
+            ticks: { color: '#4a4860', font: { family: 'JetBrains Mono', size: 10, weight: '600' }, stepSize: 1 },
+            border: { display: false }, beginAtZero: true,
           },
         },
       },
     });
   }
 
-  if (REG_BY_DAY.length > 0) makeChart('regChart', REG_BY_DAY, 'green');
-  if (VER_BY_DAY.length > 0) makeChart('verChart', VER_BY_DAY, 'purple');
+  makeChart('regChart', REG_BY_DAY, 'green');
+  makeChart('verChart', VER_BY_DAY, 'purple');
 
-  // ===== Languages =====
-  const langFlags = {
-    ru: '🇷🇺', en: '🇬🇧', hi: '🇮🇳', br: '🇧🇷',
-    es: '🇪🇸', uz: '🇺🇿', az: '🇦🇿', tr: '🇹🇷',
-    pt: '🇵🇹', ar: '🇸🇦',
-  };
-  const langNames = {
-    ru: 'Русский', en: 'English', hi: 'Hindi', br: 'Brazilian',
-    es: 'Español', uz: "O'zbek", az: 'Azərbaycan', tr: 'Türkçe',
-    pt: 'Português', ar: 'العربية',
-  };
+  // ===== Языки =====
+  const langFlags = { ru:'🇷🇺',en:'🇬🇧',hi:'🇮🇳',br:'🇧🇷',es:'🇪🇸',uz:'🇺🇿',az:'🇦🇿',tr:'🇹🇷',pt:'🇵🇹',ar:'🇸🇦' };
+  const langNames = { ru:'Русский',en:'English',hi:'Hindi',br:'Brazilian',es:'Español',uz:"O'zbek",az:'Azərbaycan',tr:'Türkçe',pt:'Português',ar:'العربية' };
   const barColors = ['#34d399','#a78bfa','#22d3ee','#fbbf24','#fb7185','#f97316','#818cf8','#a3e635','#e879f9','#38bdf8'];
 
-  function updateLangs(langs) {
+  function updateLangs(langs, total) {
     const list = document.getElementById('langList');
     list.innerHTML = '';
     if (!langs || langs.length === 0) {
@@ -387,7 +331,7 @@
     }
     const maxCnt = langs[0].cnt;
     langs.forEach((l, i) => {
-      const pct = STATS.total > 0 ? ((l.cnt / STATS.total) * 100).toFixed(1) : 0;
+      const pct = total > 0 ? ((l.cnt / total) * 100).toFixed(1) : 0;
       const barW = maxCnt > 0 ? ((l.cnt / maxCnt) * 100) : 0;
       const row = document.createElement('div');
       row.className = 'lang-row';
@@ -403,7 +347,7 @@
       list.appendChild(row);
     });
   }
-  updateLangs(STATS.langs);
+  if (STATS) updateLangs(STATS.langs, STATS.total);
 </script>
 </body>
 </html>
