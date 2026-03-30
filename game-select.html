@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Signal Bot</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@500;600;700&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #07050d;
+    --surface: #0f0c18;
+    --surface2: #16122a;
+    --card-border: rgba(255,255,255,0.045);
+    --card-border-hover: rgba(255,255,255,0.1);
+    --text: #eeebf5;
+    --text-sec: #8a85a0;
+    --text-muted: #4d4868;
+    --green: #34d399;
+    --green-soft: rgba(52,211,153,0.1);
+    --green-border: rgba(52,211,153,0.18);
+    --purple: #a78bfa;
+    --purple-soft: rgba(167,139,250,0.1);
+    --amber: #fbbf24;
+    --amber-soft: rgba(251,191,36,0.1);
+    --cyan: #22d3ee;
+    --cyan-soft: rgba(34,211,238,0.1);
+    --rose: #fb7185;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== Atmospheric background ===== */
+  .atmosphere {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .atmosphere .orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(90px); opacity: 0.7;
+    animation: float 16s ease-in-out infinite alternate;
+  }
+  .atmosphere .orb.o1 {
+    width: 420px; height: 420px;
+    background: rgba(167,139,250,0.06);
+    top: -15%; left: -10%;
+    animation-duration: 18s;
+  }
+  .atmosphere .orb.o2 {
+    width: 350px; height: 350px;
+    background: rgba(34,211,238,0.04);
+    bottom: -5%; right: -12%;
+    animation-duration: 22s; animation-delay: -6s;
+  }
+  .atmosphere .orb.o3 {
+    width: 250px; height: 250px;
+    background: rgba(251,191,36,0.03);
+    top: 45%; left: 50%;
+    animation-duration: 20s; animation-delay: -10s;
+  }
+  @keyframes float {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(25px, -15px) scale(1.08); }
+  }
+
+  /* Noise grain */
+  .noise {
+    position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    opacity: 0.018;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px;
+  }
+
+  .page {
+    position: relative; z-index: 2;
+    max-width: 420px; margin: 0 auto;
+    padding: 24px 16px 44px;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+    opacity: 0; animation: up 0.6s ease 0.05s forwards;
+  }
+
+  .brand {
+    display: inline-flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .brand-ava {
+    width: 54px; height: 54px; border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 24px; font-weight: 900; color: #fff;
+    box-shadow:
+      0 0 0 3px rgba(124,58,237,0.15),
+      0 0 30px rgba(124,58,237,0.2),
+      0 0 60px rgba(6,182,212,0.1);
+    animation: ava-glow 4s ease-in-out infinite alternate;
+    flex-shrink: 0;
+  }
+  @keyframes ava-glow {
+    0%   { box-shadow: 0 0 0 3px rgba(124,58,237,0.15), 0 0 30px rgba(124,58,237,0.2); }
+    100% { box-shadow: 0 0 0 3px rgba(6,182,212,0.15), 0 0 30px rgba(6,182,212,0.2); }
+  }
+  .brand-txt { text-align: left; }
+  .brand-name {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 18px; font-weight: 900; letter-spacing: 0.5px;
+    background: linear-gradient(90deg, var(--text), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1.15;
+  }
+  .brand-tag {
+    font-size: 10px; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-top: 2px;
+  }
+
+  .online-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--green-soft);
+    border: 1px solid var(--green-border);
+    border-radius: 20px; padding: 5px 16px;
+    font-size: 11px; font-weight: 700; color: var(--green);
+    letter-spacing: 0.8px; margin-bottom: 18px;
+  }
+  .online-pill::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--green); border-radius: 50%;
+    animation: dot-blink 2s ease-in-out infinite;
+  }
+  @keyframes dot-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .header h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 22px; font-weight: 900;
+    letter-spacing: -0.5px; margin-bottom: 6px;
+  }
+  .header p {
+    font-size: 13px; color: var(--text-sec); font-weight: 500;
+    line-height: 1.4;
+  }
+
+  @keyframes up {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Stats ===== */
+  .stats {
+    display: flex; gap: 10px;
+    margin-bottom: 30px;
+    opacity: 0; animation: up 0.5s ease 0.12s forwards;
+  }
+  .stat-card {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 16px 12px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute;
+    top: -30px; right: -30px;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(52,211,153,0.06), transparent 70%);
+    pointer-events: none;
+  }
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px; font-weight: 700;
+    color: var(--green);
+    position: relative; z-index: 1;
+  }
+  .stat-label {
+    font-size: 10px; color: var(--text-muted);
+    font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.6px; margin-top: 5px;
+    position: relative; z-index: 1;
+  }
+
+  /* ===== Section title ===== */
+  .sec-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 11px; color: var(--text-muted);
+    font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+    padding-left: 4px;
+  }
+
+  /* ===== Game cards ===== */
+  .games {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .game {
+    position: relative;
+    border-radius: 20px;
+    padding: 22px 20px;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    transition: transform 0.2s, border-color 0.25s, box-shadow 0.3s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .game:active { transform: scale(0.975); }
+  .game:hover {
+    border-color: var(--card-border-hover);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  }
+
+  /* Per-game gradients */
+  .game.jet {
+    background: linear-gradient(150deg, #140e28 0%, #0c0818 100%);
+  }
+  .game.jet::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 180px 130px at 90% 20%, rgba(167,139,250,0.1), transparent),
+      radial-gradient(ellipse 100px 100px at 10% 80%, rgba(167,139,250,0.03), transparent);
+    pointer-events: none;
+  }
+  .game.rocket {
+    background: linear-gradient(150deg, #1c1208 0%, #120c04 100%);
+  }
+  .game.rocket::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 180px 130px at 90% 20%, rgba(251,191,36,0.08), transparent),
+      radial-gradient(ellipse 100px 100px at 10% 80%, rgba(251,191,36,0.02), transparent);
+    pointer-events: none;
+  }
+  .game.mine {
+    background: linear-gradient(150deg, #081620 0%, #060e16 100%);
+  }
+  .game.mine::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 180px 130px at 90% 20%, rgba(34,211,238,0.08), transparent),
+      radial-gradient(ellipse 100px 100px at 10% 80%, rgba(34,211,238,0.02), transparent);
+    pointer-events: none;
+  }
+
+  .game > * { position: relative; z-index: 1; }
+
+  .game-top {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 10px;
+  }
+  .game-icon {
+    width: 52px; height: 52px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .jet .game-icon    { background: var(--purple-soft); }
+  .rocket .game-icon { background: var(--amber-soft); }
+  .mine .game-icon   { background: var(--cyan-soft); }
+
+  .game-meta { flex: 1; }
+  .game-title-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .game-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 16px; font-weight: 700; letter-spacing: -0.3px;
+  }
+  .game-wr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    color: var(--green);
+    background: var(--green-soft);
+    border: 1px solid var(--green-border);
+    border-radius: 7px; padding: 2px 8px;
+  }
+  .game-desc {
+    font-size: 12px; color: var(--text-sec); font-weight: 500;
+    margin-top: 3px;
+  }
+
+  .game-arrow {
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px; border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); font-size: 18px; font-weight: 700;
+    transition: all 0.25s;
+  }
+  .game:hover .game-arrow {
+    background: rgba(255,255,255,0.06);
+    color: var(--text-sec);
+    transform: translateY(-50%) translateX(3px);
+  }
+
+  /* Stagger */
+  .games .game:nth-child(1) { opacity: 0; animation: up 0.45s ease 0.2s forwards; }
+  .games .game:nth-child(2) { opacity: 0; animation: up 0.45s ease 0.3s forwards; }
+  .games .game:nth-child(3) { opacity: 0; animation: up 0.45s ease 0.4s forwards; }
+
+  /* ===== Feed ===== */
+  .feed-section {
+    opacity: 0; animation: up 0.5s ease 0.5s forwards;
+  }
+
+  .feed-list {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .feed-item {
+    display: flex; align-items: center;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    animation: feed-in 0.45s ease;
+  }
+  @keyframes feed-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .feed-ava {
+    width: 36px; height: 36px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0; margin-right: 12px;
+  }
+  .feed-ava.fj  { background: var(--purple-soft); }
+  .feed-ava.frq { background: var(--amber-soft); }
+  .feed-ava.fmn { background: var(--cyan-soft); }
+
+  .feed-body { flex: 1; min-width: 0; }
+  .feed-name {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .feed-game-tag {
+    font-size: 9px; font-weight: 700; padding: 1px 6px;
+    border-radius: 4px; letter-spacing: 0.3px;
+  }
+  .feed-game-tag.tlj  { background: var(--purple-soft); color: var(--purple); }
+  .feed-game-tag.trq  { background: var(--amber-soft); color: var(--amber); }
+  .feed-game-tag.tmn  { background: var(--cyan-soft); color: var(--cyan); }
+  .feed-time {
+    font-size: 11px; color: var(--text-muted); font-weight: 500;
+    margin-top: 1px;
+  }
+
+  .feed-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px; font-weight: 700; color: var(--green);
+    flex-shrink: 0; margin-left: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="atmosphere">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
+<div class="noise"></div>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="brand">
+      <div class="brand-ava">M</div>
+      <div class="brand-txt">
+        <div class="brand-name">MELLSTROY</div>
+        <div class="brand-tag">Signal Project</div>
+      </div>
+    </div>
+    <br>
+    <div class="online-pill">SIGNAL BOT · ONLINE</div>
+    <h1>Выбери игру</h1>
+    <p>AI-сигналы на основе нейросети,<br>обученной на 10 000+ раундов</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-num" id="sEarn">$14,280</div>
+      <div class="stat-label">Заработано сегодня</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="sSignals">8,412</div>
+      <div class="stat-label">Сигналов выдано</div>
+    </div>
+  </div>
+
+  <!-- Games -->
+  <div class="sec-title">Доступные игры</div>
+  <div class="games">
+
+    <div class="game jet" onclick="go('luckyjet')">
+      <div class="game-top">
+        <div class="game-icon">🚀</div>
+        <div class="game-meta">
+          <div class="game-title-row">
+            <span class="game-title">Lucky Jet</span>
+            <span class="game-wr" id="wrLj">92%</span>
+          </div>
+          <div class="game-desc">Crash · Предскажем коэффициент забора</div>
+        </div>
+      </div>
+      <div class="game-arrow">›</div>
+    </div>
+
+    <div class="game rocket" onclick="go('rocketqueen')">
+      <div class="game-top">
+        <div class="game-icon">👸</div>
+        <div class="game-meta">
+          <div class="game-title-row">
+            <span class="game-title">Rocket Queen</span>
+            <span class="game-wr" id="wrRq">90%</span>
+          </div>
+          <div class="game-desc">Crash · Точный момент для вывода</div>
+        </div>
+      </div>
+      <div class="game-arrow">›</div>
+    </div>
+
+    <div class="game mine" onclick="go('mines')">
+      <div class="game-top">
+        <div class="game-icon">💎</div>
+        <div class="game-meta">
+          <div class="game-title-row">
+            <span class="game-title">Mines</span>
+            <span class="game-wr" id="wrMn">93%</span>
+          </div>
+          <div class="game-desc">Минное поле · Покажем безопасные клетки</div>
+        </div>
+      </div>
+      <div class="game-arrow">›</div>
+    </div>
+
+  </div>
+
+  <!-- Feed -->
+  <div class="feed-section">
+    <div class="sec-title">Последние выигрыши</div>
+    <div class="feed-list" id="feedList"></div>
+  </div>
+
+</div>
+
+<script>
+  const URLS = { luckyjet:'luckyjet.html', rocketqueen:'rocketqueen.html', mines:'mines.html' };
+  const GAMES = [
+    { label:'Lucky Jet',   emoji:'🚀', ava:'fj',  tag:'tlj'  },
+    { label:'Rocket Queen', emoji:'👸', ava:'frq', tag:'trq'  },
+    { label:'Mines',        emoji:'💎', ava:'fmn', tag:'tmn'  },
+  ];
+  const NAMES = [
+    'Александр','Мария','Дмитрий','Анна','Олег','Карина','Артём',
+    'Елена','Максим','Влад','Рустам','Камиль','Иван','Nikita',
+    'Sofia','Ahmed','Pedro','Tom','Ali','Sara','John','Omar','Лиза',
+  ];
+
+  const r=(a,b)=>Math.random()*(b-a)+a, ri=(a,b)=>Math.floor(r(a,b+1));
+
+  function mask(n) {
+    if (n.length <= 3) return n[0] + '••';
+    return n.slice(0, 2) + '•••' + n.slice(-1);
+  }
+  function genName() { return mask(NAMES[ri(0, NAMES.length-1)]); }
+  function fmtTime(m) { return m < 1 ? 'только что' : m + ' мин. назад'; }
+
+  function go(g) {
+    if (window.Telegram?.WebApp) window.Telegram.WebApp.openLink(URLS[g]);
+    else window.location.href = URLS[g];
+  }
+
+  // Stats — realistic slow ticks
+  function initStats() {
+    document.getElementById('sEarn').textContent = '$' + ri(10000,17000).toLocaleString();
+    document.getElementById('sSignals').textContent = ri(5000,9000).toLocaleString();
+    document.getElementById('wrLj').textContent = ri(89,94) + '%';
+    document.getElementById('wrRq').textContent = ri(87,93) + '%';
+    document.getElementById('wrMn').textContent = ri(90,95) + '%';
+
+    (function tickE() {
+      setTimeout(() => {
+        const el = document.getElementById('sEarn');
+        let v = parseInt(el.textContent.replace(/[$,]/g,''));
+        el.textContent = '$' + (v + ri(8,40)).toLocaleString();
+        tickE();
+      }, ri(8000,16000));
+    })();
+
+    (function tickS() {
+      setTimeout(() => {
+        const el = document.getElementById('sSignals');
+        let v = parseInt(el.textContent.replace(/,/g,''));
+        el.textContent = (v + ri(1,2)).toLocaleString();
+        tickS();
+      }, ri(10000,22000));
+    })();
+  }
+
+  // ===== Feed with proper time ordering =====
+  // Each feed entry stores its "minutes ago" value.
+  // Initial items: 2, 5, 11, 19 min ago (top = freshest).
+  // New items appear at top with "только что".
+  // Every 30s all times tick up so the list stays coherent.
+
+  const feedData = []; // { mins, game, name, amount }
+
+  function renderFeed() {
+    const list = document.getElementById('feedList');
+    const isFirst = list.children.length === 0;
+
+    list.innerHTML = '';
+    feedData.forEach((item, idx) => {
+      const g = GAMES[item.game];
+      const el = document.createElement('div');
+      el.className = 'feed-item';
+      // Only animate the top (newest) item, and not on initial load
+      if (idx === 0 && !isFirst && item.mins < 1) {
+        // keep animation
+      } else {
+        el.style.animation = 'none';
+      }
+      el.innerHTML = `
+        <div class="feed-ava ${g.ava}">${g.emoji}</div>
+        <div class="feed-body">
+          <div class="feed-name">
+            ${item.name}
+            <span class="feed-game-tag ${g.tag}">${g.label}</span>
+          </div>
+          <div class="feed-time">${fmtTime(item.mins)}</div>
+        </div>
+        <div class="feed-amount">+$${item.amount}</div>
+      `;
+      list.appendChild(el);
+    });
+  }
+
+  function initFeed() {
+    // Initial entries — ascending time (top = most recent)
+    const initTimes = [2, 5, 11, 19];
+    initTimes.forEach(mins => {
+      feedData.push({
+        mins,
+        game: ri(0,2),
+        name: genName(),
+        amount: ri(8, 380),
+      });
+    });
+    renderFeed();
+
+    // Tick all times up by 1 every 30s
+    setInterval(() => {
+      feedData.forEach(item => { item.mins += 1; });
+      renderFeed();
+    }, 30000);
+
+    // Add new entry at top every 14-28s
+    (function addNext() {
+      setTimeout(() => {
+        feedData.unshift({
+          mins: 0,
+          game: ri(0,2),
+          name: genName(),
+          amount: ri(8, 380),
+        });
+        // Keep max 5
+        while (feedData.length > 5) feedData.pop();
+        renderFeed();
+        addNext();
+      }, ri(14000, 28000));
+    })();
+  }
+
+  initStats();
+  initFeed();
+</script>
+</body>
+</html>

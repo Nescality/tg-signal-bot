@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Mines — Signal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=JetBrains+Mono:wght@700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a1628;
+    --surface: #0f1f38;
+    --surface2: #162a4a;
+    --accent: #06b6d4;
+    --accent-glow: #22d3ee;
+    --green: #22c55e;
+    --green-glow: #4ade80;
+    --red: #ef4444;
+    --gold: #fbbf24;
+    --text: #e8f4f8;
+    --text-dim: #6b8fa8;
+    --mine-bg: #0d2847;
+    --mine-safe: #115e59;
+    --mine-bomb: #7f1d1d;
+    --mine-hover: #164e63;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 500px 350px at 50% 25%, rgba(6,182,212,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 300px 300px at 70% 80%, rgba(34,197,94,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 420px; margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+
+  /* Header */
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .logo { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
+  .logo span { color: var(--accent-glow); }
+  .badge-live { display: flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.25); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600; color: var(--green); }
+  .badge-live::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  /* Stats */
+  .stats { display: flex; gap: 8px; margin-bottom: 20px; }
+  .stat-card { flex: 1; background: var(--surface); border: 1px solid rgba(6,182,212,0.1); border-radius: 14px; padding: 12px; text-align: center; }
+  .stat-val { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--accent-glow); }
+  .stat-val.green { color: var(--green); }
+  .stat-lbl { font-size: 10px; color: var(--text-dim); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Grid */
+  .grid-wrapper {
+    background: var(--surface);
+    border: 1px solid rgba(6,182,212,0.15);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .grid-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .grid-info {
+    font-size: 13px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 14px;
+  }
+  .grid-info strong { color: var(--green); }
+
+  .mine-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .mine-cell {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background: var(--mine-bg);
+    border: 2px solid rgba(6,182,212,0.12);
+    cursor: default;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mine-cell::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent);
+    border-radius: 8px;
+  }
+
+  .mine-cell.safe {
+    background: var(--mine-safe);
+    border-color: rgba(34,197,94,0.4);
+    box-shadow: 0 0 12px rgba(34,197,94,0.15);
+    transform: scale(1.04);
+  }
+  .mine-cell.bomb {
+    background: var(--mine-bomb);
+    border-color: rgba(239,68,68,0.4);
+    box-shadow: 0 0 12px rgba(239,68,68,0.15);
+  }
+  .mine-cell.hidden {
+    background: var(--mine-bg);
+    border-color: rgba(6,182,212,0.12);
+    box-shadow: none;
+    transform: scale(1);
+  }
+  .mine-cell .icon {
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .mine-cell.revealed .icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Result */
+  .result-block { display: none; gap: 10px; margin-bottom: 20px; }
+  .result-block.visible { display: flex; }
+  .res-btn {
+    flex: 1; padding: 14px; border: none; border-radius: 14px;
+    font-family: 'Outfit'; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .res-btn:active { transform: scale(0.96); }
+  .res-btn.win { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+  .res-btn.lose { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+
+  /* Streak */
+  .streak { background: var(--surface); border: 1px solid rgba(34,197,94,0.12); border-radius: 14px; padding: 12px 18px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between; }
+  .streak.visible { display: flex; }
+  .streak-txt { font-size: 13px; color: var(--text-dim); }
+  .streak-txt strong { color: var(--green); font-family: 'JetBrains Mono', monospace; }
+  .streak-dots { display: flex; gap: 4px; }
+  .s-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface2); border: 1px solid rgba(107,143,168,0.2); }
+  .s-dot.w { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+  .s-dot.l { background: var(--red); border-color: var(--red); }
+
+  /* Button */
+  .btn-go {
+    width: 100%; padding: 18px; border: none; border-radius: 16px;
+    font-family: 'Outfit'; font-size: 16px; font-weight: 700;
+    cursor: pointer; color: #fff;
+    background: linear-gradient(135deg, var(--accent), #0891b2);
+    box-shadow: 0 4px 24px rgba(6,182,212,0.25);
+    transition: all 0.25s; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .btn-go:hover { box-shadow: 0 6px 32px rgba(6,182,212,0.4); transform: translateY(-1px); }
+  .btn-go:active { transform: scale(0.98); }
+  .btn-go:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-go .ld { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: sp 0.8s linear infinite; }
+  .btn-go.loading .ld { display: inline-block; }
+  .btn-go.loading .bt { display: none; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+
+  /* Wins */
+  .feed { margin-top: 24px; }
+  .feed-title { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+  .feed-entry { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface); border-radius: 10px; margin-bottom: 6px; animation: si 0.3s ease; }
+  @keyframes si { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; } }
+  .feed-user { font-size: 13px; color: var(--text-dim); }
+  .feed-amt { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--green); }
+
+  /* Traps selector */
+  .traps-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px; }
+  .traps-label { font-size: 13px; color: var(--text-dim); }
+  .traps-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--accent-glow); min-width: 20px; text-align: center; }
+  .traps-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid rgba(6,182,212,0.3); background: var(--surface2); color: var(--accent-glow); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .traps-btn:hover { background: rgba(6,182,212,0.15); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">CAVE<span>MINES</span></div>
+    <div class="badge-live">LIVE</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-val" id="sEarn">$0</div>
+      <div class="stat-lbl">Сегодня</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val green" id="sOnl">0</div>
+      <div class="stat-lbl">Онлайн</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="sWr">0%</div>
+      <div class="stat-lbl">Винрейт</div>
+    </div>
+  </div>
+
+  <div class="grid-wrapper">
+    <div class="grid-label">Поле 5×5 — безопасные клетки</div>
+
+    <div class="traps-row">
+      <div class="traps-label">Ловушек:</div>
+      <button class="traps-btn" onclick="changeTraps(-1)">−</button>
+      <div class="traps-val" id="trapsVal">3</div>
+      <button class="traps-btn" onclick="changeTraps(1)">+</button>
+    </div>
+
+    <div class="mine-grid" id="mineGrid"></div>
+    <div class="grid-info" id="gridInfo">Нажми кнопку для получения сигнала</div>
+  </div>
+
+  <div class="result-block" id="resBlock">
+    <button class="res-btn win" onclick="record(true)">✅ Выиграл</button>
+    <button class="res-btn lose" onclick="record(false)">❌ Проиграл</button>
+  </div>
+
+  <div class="streak" id="streakBar">
+    <div class="streak-txt">Серия побед: <strong id="strCnt">0</strong></div>
+    <div class="streak-dots" id="strDots"></div>
+  </div>
+
+  <button class="btn-go" id="btnGo" onclick="getSignal()">
+    <span class="bt">💎 Получить сигнал</span>
+    <span class="ld"></span>
+  </button>
+
+  <div class="feed">
+    <div class="feed-title">Последние выигрыши</div>
+    <div id="feedList"></div>
+  </div>
+</div>
+
+<script>
+  let streak=0, results=[], active=false, traps=3;
+  const r=(a,b)=>Math.random()*(b-a)+a, ri=(a,b)=>Math.floor(r(a,b+1));
+  const names=['Alex','Maria','Дима','Анна','John','Pedro','Олег','Карина','Max','Влад','Рустам','Ali','Sara','Артём','Tom','Nikita'];
+  const gn=()=>names[ri(0,names.length-1)].slice(0,ri(2,4))+'***';
+
+  // Build grid
+  function buildGrid() {
+    const grid = document.getElementById('mineGrid');
+    grid.innerHTML = '';
+    for (let i = 0; i < 25; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'mine-cell hidden';
+      cell.id = 'cell' + i;
+      cell.innerHTML = '<span class="icon"></span>';
+      grid.appendChild(cell);
+    }
+  }
+
+  function changeTraps(delta) {
+    traps = Math.max(1, Math.min(10, traps + delta));
+    document.getElementById('trapsVal').textContent = traps;
+  }
+
+  function init() {
+    document.getElementById('sEarn').textContent = '$' + ri(7000, 15000).toLocaleString();
+    document.getElementById('sOnl').textContent = ri(600, 2200).toLocaleString();
+    document.getElementById('sWr').textContent = ri(87, 95) + '%';
+    setInterval(() => { let e = document.getElementById('sOnl'), v = parseInt(e.textContent.replace(/,/g, '')); e.textContent = (v + ri(-8, 12)).toLocaleString(); }, 5000);
+    setInterval(() => { let e = document.getElementById('sEarn'), v = parseInt(e.textContent.replace(/[$,]/g, '')); e.textContent = '$' + (v + ri(10, 70)).toLocaleString(); }, 3000);
+    buildGrid();
+    for (let i = 0; i < 4; i++) addWin();
+    setInterval(addWin, ri(4000, 8000));
+  }
+
+  function addWin() {
+    const c = document.getElementById('feedList'), e = document.createElement('div');
+    e.className = 'feed-entry';
+    e.innerHTML = `<span class="feed-user">👤 ${gn()}</span><span class="feed-amt">+$${r(5, 400).toFixed(0)}</span>`;
+    c.insertBefore(e, c.firstChild);
+    if (c.children.length > 5) c.removeChild(c.lastChild);
+  }
+
+  function getSignal() {
+    if (active) return;
+    const btn = document.getElementById('btnGo');
+    const info = document.getElementById('gridInfo');
+    const rb = document.getElementById('resBlock');
+
+    btn.classList.add('loading'); btn.disabled = true;
+    rb.classList.remove('visible');
+
+    // Reset grid
+    buildGrid();
+
+    setTimeout(() => {
+      // Generate random bomb positions
+      const bombSet = new Set();
+      while (bombSet.size < traps) {
+        bombSet.add(ri(0, 24));
+      }
+
+      // Reveal cells one by one with animation
+      let delay = 0;
+      for (let i = 0; i < 25; i++) {
+        const cell = document.getElementById('cell' + i);
+        const isBomb = bombSet.has(i);
+
+        setTimeout(() => {
+          cell.classList.remove('hidden');
+          cell.classList.add(isBomb ? 'bomb' : 'safe', 'revealed');
+          cell.querySelector('.icon').textContent = isBomb ? '💣' : '💎';
+        }, delay);
+
+        delay += 40;
+      }
+
+      setTimeout(() => {
+        const safeCount = 25 - traps;
+        info.innerHTML = `<strong>${safeCount}</strong> безопасных клеток · <strong>${traps}</strong> ловушек`;
+        btn.classList.remove('loading'); btn.disabled = false;
+        active = true;
+        setTimeout(() => rb.classList.add('visible'), 300);
+      }, delay + 100);
+
+    }, ri(1200, 2000));
+  }
+
+  function record(w) {
+    active = false;
+    document.getElementById('resBlock').classList.remove('visible');
+    if (w) { streak++; if (Math.random() < 0.3) streak = Math.max(streak, ri(3, 7)); } else streak = 0;
+    results.push(w); if (results.length > 10) results.shift();
+    const sb = document.getElementById('streakBar'); sb.classList.add('visible');
+    document.getElementById('strCnt').textContent = streak;
+    const sd = document.getElementById('strDots'); sd.innerHTML = '';
+    results.slice(-8).forEach(x => { const d = document.createElement('div'); d.className = 's-dot ' + (x ? 'w' : 'l'); sd.appendChild(d); });
+    document.getElementById('gridInfo').innerHTML = w ? '🎉 <strong>Отлично!</strong> Серия: ' + streak : '💡 Удвой ставку (x2) для покрытия';
+  }
+
+  init();
+</script>
+</body>
+</html>
