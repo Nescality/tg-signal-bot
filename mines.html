@@ -6,58 +6,325 @@
 <title>Mines — Signal</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=JetBrains+Mono:wght@700&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box}
-  :root{--bg:#0a1628;--surface:#0f1f38;--surface2:#162a4a;--accent:#06b6d4;--accent-glow:#22d3ee;--green:#22c55e;--red:#ef4444;--text:#e8f4f8;--text-dim:#6b8fa8;--mine-bg:#0d2847;--mine-safe:#115e59;--mine-bomb:#7f1d1d}
-  body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;position:relative}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 500px 350px at 50% 25%,rgba(6,182,212,.08) 0%,transparent 70%),radial-gradient(ellipse 300px 300px at 70% 80%,rgba(34,197,94,.04) 0%,transparent 70%);pointer-events:none}
-  .container{position:relative;z-index:1;max-width:420px;margin:0 auto;padding:20px 16px 40px}
-  .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}.logo{font-size:22px;font-weight:900;letter-spacing:-.5px}.logo span{color:var(--accent-glow)}
-  .badge-live{display:flex;align-items:center;gap:6px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--green)}.badge-live::before{content:'';width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 1.5s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-  .stats{display:flex;gap:8px;margin-bottom:20px}.stat-card{flex:1;background:var(--surface);border:1px solid rgba(6,182,212,.1);border-radius:14px;padding:12px;text-align:center}.stat-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--accent-glow)}.stat-lbl{font-size:10px;color:var(--text-dim);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
-  .grid-wrapper{background:var(--surface);border:1px solid rgba(6,182,212,.15);border-radius:20px;padding:20px;margin-bottom:20px}.grid-label{font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;text-align:center}.grid-info{font-size:13px;color:var(--text-dim);text-align:center;margin-top:14px}.grid-info strong{color:var(--green)}
-  .mine-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:320px;margin:0 auto}
-  .mine-cell{aspect-ratio:1;border-radius:10px;background:var(--mine-bg);border:2px solid rgba(6,182,212,.12);cursor:default;transition:all .4s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;overflow:hidden}.mine-cell::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04),transparent);border-radius:8px}.mine-cell.safe{background:var(--mine-safe);border-color:rgba(34,197,94,.4);box-shadow:0 0 12px rgba(34,197,94,.15);transform:scale(1.04)}.mine-cell.bomb{background:var(--mine-bomb);border-color:rgba(239,68,68,.4);box-shadow:0 0 12px rgba(239,68,68,.15)}.mine-cell.hidden{background:var(--mine-bg);border-color:rgba(6,182,212,.12);box-shadow:none;transform:scale(1)}.mine-cell .icon{opacity:0;transform:scale(0);transition:all .3s cubic-bezier(.34,1.56,.64,1)}.mine-cell.revealed .icon{opacity:1;transform:scale(1)}
-  .result-block{display:none;gap:10px;margin-bottom:20px}.result-block.visible{display:flex}.res-btn{flex:1;padding:14px;border:none;border-radius:14px;font-family:'Outfit';font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}.res-btn:active{transform:scale(.96)}.res-btn.win{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.25)}.res-btn.lose{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.25)}
-  .streak{background:var(--surface);border:1px solid rgba(34,197,94,.12);border-radius:14px;padding:12px 18px;margin-bottom:20px;display:none;align-items:center;justify-content:space-between}.streak.visible{display:flex}.streak-txt{font-size:13px;color:var(--text-dim)}.streak-txt strong{color:var(--green);font-family:'JetBrains Mono',monospace}.streak-dots{display:flex;gap:4px}.s-dot{width:10px;height:10px;border-radius:50%;background:var(--surface2);border:1px solid rgba(107,143,168,.2)}.s-dot.w{background:var(--green);border-color:var(--green);box-shadow:0 0 6px rgba(34,197,94,.4)}.s-dot.l{background:var(--red);border-color:var(--red)}
-  .btn-go{width:100%;padding:18px;border:none;border-radius:16px;font-family:'Outfit';font-size:16px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--accent),#0891b2);box-shadow:0 4px 24px rgba(6,182,212,.25);transition:all .25s;text-transform:uppercase;letter-spacing:1px}.btn-go:hover{box-shadow:0 6px 32px rgba(6,182,212,.4);transform:translateY(-1px)}.btn-go:active{transform:scale(.98)}.btn-go:disabled{opacity:.5;cursor:not-allowed}.btn-go .ld{display:none;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .8s linear infinite}.btn-go.loading .ld{display:inline-block}.btn-go.loading .bt{display:none}@keyframes sp{to{transform:rotate(360deg)}}
-  .feed{margin-top:24px}.feed-title{font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}.feed-entry{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border-radius:10px;margin-bottom:6px;animation:si .3s ease}@keyframes si{from{opacity:0;transform:translateX(-10px)}to{opacity:1}}.feed-user{font-size:13px;color:var(--text-dim)}.feed-amt{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--green)}.feed-time{font-size:10px;color:rgba(107,143,168,.5);margin-left:8px}
-  .traps-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}.traps-label{font-size:13px;color:var(--text-dim)}.traps-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--accent-glow);min-width:20px;text-align:center}.traps-btn{width:32px;height:32px;border-radius:8px;border:1px solid rgba(6,182,212,.3);background:var(--surface2);color:var(--accent-glow);font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}.traps-btn:hover{background:rgba(6,182,212,.15)}
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --bg: #0a1628;
+    --surface: #0f1f38;
+    --surface2: #162a4a;
+    --accent: #06b6d4;
+    --accent-glow: #22d3ee;
+    --green: #22c55e;
+    --red: #ef4444;
+    --text: #e8f4f8;
+    --text-dim: #6b8fa8;
+    --mine-bg: #0d2847;
+    --mine-safe: #115e59;
+    --mine-bomb: #7f1d1d;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 500px 350px at 50% 25%, rgba(6,182,212,.08) 0%, transparent 70%),
+      radial-gradient(ellipse 300px 300px at 70% 80%, rgba(34,197,94,.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    padding: 16px;
+  }
+
+  .header { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin-bottom: 16px; 
+  }
+  
+  .logo { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; }
+  .logo span { color: var(--accent-glow); }
+
+  .grid-wrapper {
+    background: var(--surface);
+    border: 1px solid rgba(6,182,212,.15);
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  .grid-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .traps-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .traps-label { font-size: 13px; color: var(--text-dim); }
+  .traps-val { 
+    font-family: 'JetBrains Mono', monospace; 
+    font-size: 18px; 
+    font-weight: 700; 
+    color: var(--accent-glow); 
+    min-width: 24px; 
+    text-align: center; 
+  }
+
+  .traps-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(6,182,212,.3);
+    background: var(--surface2);
+    color: var(--accent-glow);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .traps-btn:active { transform: scale(0.9); }
+
+  .mine-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .mine-cell {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background: var(--mine-bg);
+    border: 2px solid rgba(6,182,212,.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.4s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .mine-cell.safe { background: var(--mine-safe); border-color: rgba(34,197,94,.4); transform: scale(1.05); }
+  .mine-cell.bomb { background: var(--mine-bomb); border-color: rgba(239,68,68,.4); }
+  .mine-cell.hidden { transform: scale(1); }
+
+  .grid-info { font-size: 13px; color: var(--text-dim); text-align: center; margin-top: 14px; }
+  .grid-info strong { color: var(--green); }
+
+  .result-block { display: none; gap: 10px; margin-bottom: 12px; }
+  .result-block.visible { display: flex; }
+  
+  .res-btn {
+    flex: 1;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Outfit';
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .res-btn.win { background: rgba(34,197,94,.12); color: var(--green); border: 1px solid rgba(34,197,94,.2); }
+  .res-btn.lose { background: rgba(239,68,68,.12); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+
+  .streak {
+    background: var(--surface);
+    border: 1px solid rgba(34,197,94,0.1);
+    border-radius: 14px;
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .streak.visible { display: flex; }
+  .streak-txt { font-size: 13px; color: var(--text-dim); }
+  .streak-txt strong { color: var(--green); font-family: 'JetBrains Mono', monospace; }
+  .streak-dots { display: flex; gap: 4px; }
+  .s-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface2); }
+  .s-dot.w { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .s-dot.l { background: var(--red); }
+
+  .btn-go {
+    width: 100%;
+    padding: 20px;
+    border: none;
+    border-radius: 18px;
+    font-family: 'Outfit';
+    font-size: 16px;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), #0891b2);
+    box-shadow: 0 8px 25px rgba(6,182,212,.2);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .btn-go:active { transform: translateY(2px); }
+  .btn-go:disabled { opacity: .5; }
+
+  .ld { display: none; width: 22px; height: 22px; border: 3px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: sp .8s linear infinite; }
+  .btn-go.loading .ld { display: inline-block; }
+  .btn-go.loading .bt { display: none; }
+  @keyframes sp { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header"><div class="logo">CAVE<span>MINES</span></div><div class="badge-live">LIVE</div></div>
-  <div class="stats"><div class="stat-card"><div class="stat-val" id="sEarn">$0</div><div class="stat-lbl">Сегодня</div></div><div class="stat-card"><div class="stat-val" id="sWr">0%</div><div class="stat-lbl">Винрейт</div></div></div>
-  <div class="grid-wrapper"><div class="grid-label">Поле 5×5 — безопасные клетки</div><div class="traps-row"><div class="traps-label">Ловушек:</div><button class="traps-btn" onclick="changeTraps(-1)">−</button><div class="traps-val" id="trapsVal">3</div><button class="traps-btn" onclick="changeTraps(1)">+</button></div><div class="mine-grid" id="mineGrid"></div><div class="grid-info" id="gridInfo">Нажми кнопку для получения сигнала</div></div>
-  <div class="result-block" id="resBlock"><button class="res-btn win" onclick="record(true)">✅ Выиграл</button><button class="res-btn lose" onclick="record(false)">❌ Проиграл</button></div>
-  <div class="streak" id="streakBar"><div class="streak-txt">Серия побед: <strong id="strCnt">0</strong></div><div class="streak-dots" id="strDots"></div></div>
-  <button class="btn-go" id="btnGo" onclick="getSignal()"><span class="bt">💎 Получить сигнал</span><span class="ld"></span></button>
-  <div class="feed"><div class="feed-title">Последние выигрыши</div><div id="feedList"></div></div>
-</div>
-<script>
-var PAGE_SALT=400;
-function makeSeed(salt){var d=new Date();return((d.getFullYear()*10000+d.getMonth()*100+d.getDate())*100+d.getHours())*31+salt>>>0;}
-function mulberry32(s){s=s>>>0;return function(){s|=0;s=s+0x6D2B79F5|0;var t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
-var _sr=mulberry32(makeSeed(PAGE_SALT));
-function srand(a,b){return _sr()*(b-a)+a;}function sri(a,b){return Math.floor(srand(a,b+1));}
-function rand(a,b){return Math.random()*(b-a)+a;}function ri(a,b){return Math.floor(rand(a,b+1));}
-var NAMES=['Alex','Maria','Дима','Анна','John','Pedro','Олег','Карина','Max','Влад','Рустам','Ali','Sara','Артём','Tom','Nikita'];
-function sgenUser(){var n=NAMES[sri(0,NAMES.length-1)];return n.slice(0,sri(2,4))+'\u2022\u2022\u2022';}
-function genUser(){var n=NAMES[ri(0,NAMES.length-1)];return n.slice(0,ri(2,4))+'\u2022\u2022\u2022';}
-function sgenAmt(){var x=_sr();if(x<0.50)return sri(3,18);if(x<0.80)return sri(18,55);if(x<0.95)return sri(55,120);return sri(120,250);}
-function genAmt(){var x=Math.random();if(x<0.50)return ri(3,18);if(x<0.80)return ri(18,55);if(x<0.95)return ri(55,120);return ri(120,250);}
-function fmtMins(m){if(m<1)return'только что';if(m<60)return m+' мин.';return Math.floor(m/60)+' ч.';}
 
-var streak=0,results=[],active=false,traps=3;
-function buildGrid(){var grid=document.getElementById('mineGrid');grid.innerHTML='';for(var i=0;i<25;i++){var cell=document.createElement('div');cell.className='mine-cell hidden';cell.id='cell'+i;cell.innerHTML='<span class="icon"></span>';grid.appendChild(cell);}}
-function changeTraps(delta){traps=Math.max(1,Math.min(10,traps+delta));document.getElementById('trapsVal').textContent=traps;}
-var winFeed=[];
-function renderWins(){var c=document.getElementById('feedList');c.innerHTML='';for(var i=0;i<winFeed.length;i++){var w=winFeed[i];var el=document.createElement('div');el.className='feed-entry';if(i>0)el.style.animation='none';el.innerHTML='<span class="feed-user">\uD83D\uDC64 '+w.name+'<span class="feed-time">'+fmtMins(w.mins)+'</span></span><span class="feed-amt">+$'+w.amount+'</span>';c.appendChild(el);}}
-function initWins(){var times=[2,5,9,15];for(var i=0;i<times.length;i++)winFeed.push({name:sgenUser(),amount:sgenAmt(),mins:times[i]});renderWins();setInterval(function(){for(var i=0;i<winFeed.length;i++)winFeed[i].mins++;renderWins();},60000);(function addW(){setTimeout(function(){winFeed.unshift({name:genUser(),amount:genAmt(),mins:0});while(winFeed.length>5)winFeed.pop();renderWins();addW();},ri(25000,50000));})();}
-function init(){var h=new Date().getHours();document.getElementById('sEarn').textContent='$'+(45+h*sri(45,85)+sri(0,30)).toLocaleString();document.getElementById('sWr').textContent=sri(89,94)+'%';(function tE(){setTimeout(function(){var el=document.getElementById('sEarn');var v=parseInt(el.textContent.replace(/[$,]/g,''));el.textContent='$'+(v+ri(2,8)).toLocaleString();tE();},ri(25000,55000));})();buildGrid();initWins();}
-function getSignal(){if(active)return;var btn=document.getElementById('btnGo'),info=document.getElementById('gridInfo'),rb=document.getElementById('resBlock');btn.classList.add('loading');btn.disabled=true;rb.classList.remove('visible');buildGrid();setTimeout(function(){var bombSet=new Set();while(bombSet.size<traps)bombSet.add(ri(0,24));var delay=0;for(var i=0;i<25;i++){(function(idx){var cell=document.getElementById('cell'+idx);var isBomb=bombSet.has(idx);setTimeout(function(){cell.classList.remove('hidden');cell.classList.add(isBomb?'bomb':'safe','revealed');cell.querySelector('.icon').textContent=isBomb?'\uD83D\uDCA3':'\uD83D\uDC8E';},delay);})(i);delay+=40;}setTimeout(function(){info.innerHTML='<strong>'+(25-traps)+'</strong> безопасных клеток \u00B7 <strong>'+traps+'</strong> ловушек';btn.classList.remove('loading');btn.disabled=false;active=true;setTimeout(function(){rb.classList.add('visible');},300);},delay+100);},ri(1200,2000));}
-function record(won){active=false;document.getElementById('resBlock').classList.remove('visible');if(won){streak++;if(Math.random()<0.3)streak=Math.max(streak,ri(3,7));}else{streak=0;}results.push(won);if(results.length>10)results.shift();var sb=document.getElementById('streakBar');sb.classList.add('visible');document.getElementById('strCnt').textContent=streak;var sd=document.getElementById('strDots');sd.innerHTML='';var show=results.slice(-8);for(var i=0;i<show.length;i++){var d=document.createElement('div');d.className='s-dot '+(show[i]?'w':'l');sd.appendChild(d);}document.getElementById('gridInfo').innerHTML=won?'\uD83C\uDF89 <strong>Отлично!</strong> Серия: '+streak:'\uD83D\uDCA1 Удвой ставку (x2) для покрытия';}
-init();
+<div class="container">
+  <div class="header">
+    <div class="logo">CAVE<span>MINES</span></div>
+  </div>
+
+  <div class="grid-wrapper">
+    <div class="grid-label">Поле 5×5</div>
+    <div class="traps-row">
+      <div class="traps-label">Ловушек:</div>
+      <button class="traps-btn" onclick="changeTraps(-1)">−</button>
+      <div class="traps-val" id="trapsVal">3</div>
+      <button class="traps-btn" onclick="changeTraps(1)">+</button>
+    </div>
+    <div class="mine-grid" id="mineGrid"></div>
+    <div class="grid-info" id="gridInfo">Нажми кнопку для получения сигнала</div>
+  </div>
+
+  <div class="result-block" id="resBlock">
+    <button class="res-btn win" onclick="record(true)">✅ Выиграл</button>
+    <button class="res-btn lose" onclick="record(false)">❌ Проиграл</button>
+  </div>
+
+  <div class="streak" id="streakBar">
+    <div class="streak-txt">Серия побед: <strong id="strCnt">0</strong></div>
+    <div class="streak-dots" id="strDots"></div>
+  </div>
+
+  <button class="btn-go" id="btnGo" onclick="getSignal()">
+    <span class="bt">💎 Получить сигнал</span>
+    <span class="ld"></span>
+  </button>
+</div>
+
+<script>
+  let streak = 0, results = [], active = false, traps = 3;
+
+  function buildGrid() {
+    const grid = document.getElementById('mineGrid');
+    grid.innerHTML = '';
+    for (let i = 0; i < 25; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'mine-cell hidden';
+      cell.id = 'cell' + i;
+      cell.innerHTML = '<span></span>';
+      grid.appendChild(cell);
+    }
+  }
+
+  function changeTraps(delta) {
+    if (active) return;
+    traps = Math.max(1, Math.min(15, traps + delta));
+    document.getElementById('trapsVal').textContent = traps;
+  }
+
+  function getSignal() {
+    if (active) return;
+    const btn = document.getElementById('btnGo'), 
+          info = document.getElementById('gridInfo'), 
+          rb = document.getElementById('resBlock');
+          
+    btn.classList.add('loading');
+    btn.disabled = true;
+    rb.classList.remove('visible');
+    buildGrid();
+
+    setTimeout(() => {
+      let bombSet = new Set();
+      while (bombSet.size < traps) bombSet.add(Math.floor(Math.random() * 25));
+      
+      let delay = 0;
+      for (let i = 0; i < 25; i++) {
+        (function(idx) {
+          setTimeout(() => {
+            const cell = document.getElementById('cell' + idx);
+            const isBomb = bombSet.has(idx);
+            cell.classList.remove('hidden');
+            cell.classList.add(isBomb ? 'bomb' : 'safe');
+            cell.querySelector('span').textContent = isBomb ? '💣' : '💎';
+          }, delay);
+        })(i);
+        delay += 30;
+      }
+
+      setTimeout(() => {
+        info.innerHTML = `<strong>${25-traps}</strong> безопасных клеток`;
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        active = true;
+        rb.classList.add('visible');
+      }, delay + 200);
+    }, 1500);
+  }
+
+  function record(won) {
+    active = false;
+    document.getElementById('resBlock').classList.remove('visible');
+    
+    if (won) streak++; else streak = 0;
+    results.push(won);
+    if (results.length > 8) results.shift();
+
+    const sb = document.getElementById('streakBar');
+    sb.classList.add('visible');
+    document.getElementById('strCnt').textContent = streak;
+    
+    const sd = document.getElementById('strDots');
+    sd.innerHTML = '';
+    results.forEach(res => {
+      const d = document.createElement('div');
+      d.className = 's-dot ' + (res ? 'w' : 'l');
+      sd.appendChild(d);
+    });
+    
+    document.getElementById('gridInfo').textContent = 'Нажми кнопку для нового сигнала';
+  }
+
+  buildGrid();
 </script>
 </body>
 </html>
