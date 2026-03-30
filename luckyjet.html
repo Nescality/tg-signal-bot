@@ -6,625 +6,178 @@
 <title>Lucky Jet — Signal</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=JetBrains+Mono:wght@700&display=swap');
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
-    --bg: #0f0b1e;
-    --surface: #1a1432;
-    --surface2: #231c42;
-    --accent: #a855f7;
-    --accent-glow: #c084fc;
-    --green: #22c55e;
-    --green-glow: #4ade80;
-    --red: #ef4444;
-    --text: #f1f0f5;
-    --text-dim: #8b83a8;
-    --gold: #fbbf24;
+    --bg: #0f0b1e; --surface: #1a1432; --surface2: #231c42;
+    --accent: #a855f7; --accent-glow: #c084fc;
+    --green: #22c55e; --green-glow: #4ade80; --red: #ef4444;
+    --text: #f1f0f5; --text-dim: #8b83a8; --gold: #fbbf24;
   }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Outfit', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 600px 400px at 50% 30%, rgba(168,85,247,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 300px 300px at 80% 70%, rgba(139,131,168,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 420px;
-    margin: 0 auto;
-    padding: 20px 16px 40px;
-  }
-
-  /* ===== Header ===== */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
-
-  .logo {
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: -0.5px;
-  }
+  body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; min-height: 100vh; overflow-x: hidden; position: relative; }
+  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 600px 400px at 50% 30%, rgba(168,85,247,0.12) 0%, transparent 70%), radial-gradient(ellipse 300px 300px at 80% 70%, rgba(139,131,168,0.06) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+  .container { position: relative; z-index: 1; max-width: 420px; margin: 0 auto; padding: 20px 16px 40px; }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .logo { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
   .logo span { color: var(--accent-glow); }
-
-  .badge-live {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(34,197,94,0.15);
-    border: 1px solid rgba(34,197,94,0.3);
-    border-radius: 20px;
-    padding: 5px 14px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--green);
-  }
-  .badge-live::before {
-    content: '';
-    width: 7px; height: 7px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: pulse-dot 1.5s ease-in-out infinite;
-  }
-
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
-    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
-  }
-
-  /* ===== Stats ticker ===== */
-  .stats-ticker {
-    background: var(--surface);
-    border: 1px solid rgba(168,85,247,0.15);
-    border-radius: 14px;
-    padding: 14px 18px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .stat-item {
-    text-align: center;
-    flex: 1;
-  }
-  .stat-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--green);
-  }
-  .stat-value.gold { color: var(--gold); }
-  .stat-label {
-    font-size: 10px;
-    color: var(--text-dim);
-    margin-top: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* ===== History bar ===== */
-  .history-bar {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 24px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    scrollbar-width: none;
-  }
+  .badge-live { display: flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600; color: var(--green); }
+  .badge-live::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse-dot 1.5s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.5); } 50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,197,94,0); } }
+  .stats-ticker { background: var(--surface); border: 1px solid rgba(168,85,247,0.15); border-radius: 14px; padding: 14px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; gap: 10px; }
+  .stat-item { text-align: center; flex: 1; }
+  .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--green); }
+  .stat-label { font-size: 10px; color: var(--text-dim); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .history-bar { display: flex; gap: 6px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
   .history-bar::-webkit-scrollbar { display: none; }
-
-  .history-chip {
-    flex-shrink: 0;
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    background: var(--surface2);
-    color: var(--text-dim);
-    border: 1px solid transparent;
-    transition: all 0.3s;
-  }
-  .history-chip.high {
-    background: rgba(168,85,247,0.2);
-    color: var(--accent-glow);
-    border-color: rgba(168,85,247,0.3);
-  }
-  .history-chip.mega {
-    background: rgba(251,191,36,0.15);
-    color: var(--gold);
-    border-color: rgba(251,191,36,0.3);
-  }
-
-  /* ===== Signal card ===== */
-  .signal-card {
-    background: var(--surface);
-    border: 1px solid rgba(168,85,247,0.2);
-    border-radius: 20px;
-    padding: 28px 24px;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .signal-card::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: conic-gradient(from 0deg, transparent 0deg, rgba(168,85,247,0.08) 60deg, transparent 120deg);
-    animation: rotate-bg 8s linear infinite;
-    pointer-events: none;
-  }
-  @keyframes rotate-bg {
-    to { transform: rotate(360deg); }
-  }
-
+  .history-chip { flex-shrink: 0; padding: 5px 10px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; background: var(--surface2); color: var(--text-dim); border: 1px solid transparent; transition: all 0.3s; }
+  .history-chip.high { background: rgba(168,85,247,0.2); color: var(--accent-glow); border-color: rgba(168,85,247,0.3); }
+  .history-chip.mega { background: rgba(251,191,36,0.15); color: var(--gold); border-color: rgba(251,191,36,0.3); }
+  .signal-card { background: var(--surface); border: 1px solid rgba(168,85,247,0.2); border-radius: 20px; padding: 28px 24px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; }
+  .signal-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent 0deg, rgba(168,85,247,0.08) 60deg, transparent 120deg); animation: rotate-bg 8s linear infinite; pointer-events: none; }
+  @keyframes rotate-bg { to { transform: rotate(360deg); } }
   .signal-card > * { position: relative; z-index: 1; }
-
-  .signal-label {
-    font-size: 12px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-  }
-
-  .signal-coeff {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 56px;
-    font-weight: 700;
-    color: var(--accent-glow);
-    text-shadow: 0 0 40px rgba(168,85,247,0.4);
-    line-height: 1;
-    margin-bottom: 6px;
-    opacity: 0;
-    transform: scale(0.5);
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .signal-coeff.visible {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .signal-hint {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-top: 12px;
-  }
+  .signal-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .signal-coeff { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 700; color: var(--accent-glow); text-shadow: 0 0 40px rgba(168,85,247,0.4); line-height: 1; margin-bottom: 6px; opacity: 0; transform: scale(0.5); transition: all 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+  .signal-coeff.visible { opacity: 1; transform: scale(1); }
+  .signal-hint { font-size: 13px; color: var(--text-dim); margin-top: 12px; }
   .signal-hint strong { color: var(--green); }
-
-  /* ===== Result feedback ===== */
-  .result-block {
-    display: none;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  .result-block.visible {
-    display: flex;
-  }
-
-  .result-btn {
-    flex: 1;
-    padding: 14px;
-    border: none;
-    border-radius: 14px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
+  .confidence { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .confidence-bar-bg { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .confidence-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green), var(--green-glow)); width: 0%; transition: width 1s ease; }
+  .confidence-pct { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--green); min-width: 38px; text-align: right; }
+  .result-block { display: none; gap: 10px; margin-bottom: 20px; }
+  .result-block.visible { display: flex; }
+  .result-btn { flex: 1; padding: 14px; border: none; border-radius: 14px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .result-btn:active { transform: scale(0.96); }
-
-  .result-btn.win {
-    background: rgba(34,197,94,0.15);
-    color: var(--green);
-    border: 1px solid rgba(34,197,94,0.3);
-  }
-  .result-btn.win:hover { background: rgba(34,197,94,0.25); }
-
-  .result-btn.lose {
-    background: rgba(239,68,68,0.15);
-    color: var(--red);
-    border: 1px solid rgba(239,68,68,0.3);
-  }
-  .result-btn.lose:hover { background: rgba(239,68,68,0.25); }
-
-  /* ===== Streak ===== */
-  .streak-bar {
-    background: var(--surface);
-    border: 1px solid rgba(34,197,94,0.15);
-    border-radius: 14px;
-    padding: 12px 18px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    display: none;
-  }
+  .result-btn.win { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .result-btn.lose { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .streak-bar { background: var(--surface); border: 1px solid rgba(34,197,94,0.15); border-radius: 14px; padding: 12px 18px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between; }
   .streak-bar.visible { display: flex; }
-
-  .streak-text {
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .streak-text strong {
-    color: var(--green);
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .streak-icons {
-    display: flex;
-    gap: 4px;
-  }
-  .streak-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--surface2);
-    border: 1px solid rgba(139,131,168,0.2);
-    transition: all 0.3s;
-  }
+  .streak-text { font-size: 13px; color: var(--text-dim); }
+  .streak-text strong { color: var(--green); font-family: 'JetBrains Mono', monospace; }
+  .streak-icons { display: flex; gap: 4px; }
+  .streak-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface2); border: 1px solid rgba(139,131,168,0.2); transition: all 0.3s; }
   .streak-dot.win { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
   .streak-dot.lose { background: var(--red); border-color: var(--red); }
-
-  /* ===== Get signal btn ===== */
-  .btn-signal {
-    width: 100%;
-    padding: 18px;
-    border: none;
-    border-radius: 16px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    color: #fff;
-    background: linear-gradient(135deg, var(--accent), #7c3aed);
-    box-shadow: 0 4px 24px rgba(168,85,247,0.3);
-    transition: all 0.25s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-signal:hover {
-    box-shadow: 0 6px 32px rgba(168,85,247,0.45);
-    transform: translateY(-1px);
-  }
+  .btn-signal { width: 100%; padding: 18px; border: none; border-radius: 16px; font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), #7c3aed); box-shadow: 0 4px 24px rgba(168,85,247,0.3); transition: all 0.25s; text-transform: uppercase; letter-spacing: 1px; position: relative; overflow: hidden; }
+  .btn-signal:hover { box-shadow: 0 6px 32px rgba(168,85,247,0.45); transform: translateY(-1px); }
   .btn-signal:active { transform: scale(0.98); }
-  .btn-signal:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .btn-signal .loader {
-    display: none;
-    width: 20px; height: 20px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
+  .btn-signal:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-signal .loader { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
   .btn-signal.loading .loader { display: inline-block; }
   .btn-signal.loading .btn-text { display: none; }
-
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ===== Last wins ===== */
-  .last-wins {
-    margin-top: 24px;
-  }
-  .last-wins-title {
-    font-size: 12px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 10px;
-  }
-
-  .win-entry {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    background: var(--surface);
-    border-radius: 10px;
-    margin-bottom: 6px;
-    animation: slideIn 0.3s ease;
-  }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .win-user {
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .win-amount {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--green);
-  }
-
-  /* ===== Confidence meter ===== */
-  .confidence {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  .confidence-bar-bg {
-    flex: 1;
-    height: 6px;
-    background: var(--surface2);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .confidence-bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: linear-gradient(90deg, var(--green), var(--green-glow));
-    width: 0%;
-    transition: width 1s ease;
-  }
-  .confidence-pct {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--green);
-    min-width: 38px;
-    text-align: right;
-  }
+  .last-wins { margin-top: 24px; }
+  .last-wins-title { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+  .win-entry { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface); border-radius: 10px; margin-bottom: 6px; animation: slideIn 0.3s ease; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+  .win-user { font-size: 13px; color: var(--text-dim); }
+  .win-amount { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--green); }
+  .win-time { font-size: 10px; color: rgba(139,131,168,0.6); margin-left: 8px; }
 </style>
 </head>
 <body>
-
 <div class="container">
-  <!-- Header -->
   <div class="header">
     <div class="logo">LUCKY<span>JET</span></div>
     <div class="badge-live">LIVE</div>
   </div>
-
-  <!-- Stats ticker -->
   <div class="stats-ticker">
-    <div class="stat-item">
-      <div class="stat-value" id="todayEarnings">$0</div>
-      <div class="stat-label">Заработано сегодня</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value" id="winRate">0%</div>
-      <div class="stat-label">Винрейт</div>
-    </div>
+    <div class="stat-item"><div class="stat-value" id="todayEarnings">$0</div><div class="stat-label">Заработано сегодня</div></div>
+    <div class="stat-item"><div class="stat-value" id="winRate">0%</div><div class="stat-label">Винрейт</div></div>
   </div>
-
-  <!-- History -->
   <div class="history-bar" id="historyBar"></div>
-
-  <!-- Signal card -->
   <div class="signal-card">
     <div class="signal-label">Сигнал — забери на</div>
     <div class="signal-coeff" id="signalCoeff">—</div>
-    <div class="confidence">
-      <div class="confidence-bar-bg">
-        <div class="confidence-bar-fill" id="confFill"></div>
-      </div>
-      <div class="confidence-pct" id="confPct">—</div>
-    </div>
+    <div class="confidence"><div class="confidence-bar-bg"><div class="confidence-bar-fill" id="confFill"></div></div><div class="confidence-pct" id="confPct">—</div></div>
     <div class="signal-hint" id="signalHint">Нажми кнопку для получения сигнала</div>
   </div>
-
-  <!-- Result buttons -->
   <div class="result-block" id="resultBlock">
     <button class="result-btn win" onclick="recordResult(true)">✅ Выиграл</button>
     <button class="result-btn lose" onclick="recordResult(false)">❌ Проиграл</button>
   </div>
-
-  <!-- Streak -->
   <div class="streak-bar" id="streakBar">
     <div class="streak-text">Серия побед: <strong id="streakCount">0</strong></div>
     <div class="streak-icons" id="streakIcons"></div>
   </div>
-
-  <!-- Get signal button -->
   <button class="btn-signal" id="btnSignal" onclick="getSignal()">
     <span class="btn-text">🚀 Получить сигнал</span>
     <span class="loader"></span>
   </button>
-
-  <!-- Last wins -->
   <div class="last-wins">
     <div class="last-wins-title">Последние выигрыши</div>
     <div id="lastWins"></div>
   </div>
 </div>
-
 <script>
-  // ===== State =====
-  let streak = 0;
-  let results = [];
-  let signalActive = false;
+var streak=0,results=[],signalActive=false;
+function rand(a,b){return Math.random()*(b-a)+a;}
+function ri(a,b){return Math.floor(rand(a,b+1));}
+function genCoeff(){var r=Math.random();if(r<0.40)return rand(1.10,1.60);if(r<0.65)return rand(1.60,2.20);if(r<0.82)return rand(2.20,3.50);if(r<0.93)return rand(3.50,5.50);if(r<0.98)return rand(5.50,9.00);return rand(9.00,15.00);}
+var NAMES=['Alex','Maria','Дмитрий','Анна','John','Pedro','Ahmed','Олег','Иван','Sara','Mike','Карина','Артём','Лена','Tom','Max','Nikita','Влад','Рустам','Ali'];
+function genUsername(){var n=NAMES[ri(0,NAMES.length-1)];return n.slice(0,ri(2,4))+'\u2022\u2022\u2022';}
+function genAmount(){var x=Math.random();if(x<0.50)return ri(3,18);if(x<0.80)return ri(18,55);if(x<0.95)return ri(55,120);return ri(120,250);}
+function getDayEarnings(){var h=new Date().getHours();return 60+h*ri(55,95)+ri(0,40);}
+function fmtMins(m){if(m<1)return'только что';if(m<60)return m+' мин.';return Math.floor(m/60)+' ч.';}
 
-  // ===== Fake data generators =====
-  function rand(min, max) { return Math.random() * (max - min) + min; }
-  function randInt(min, max) { return Math.floor(rand(min, max + 1)); }
-
-  function genCoeff() {
-    const r = Math.random();
-    if (r < 0.55) return rand(1.2, 2.5);
-    if (r < 0.85) return rand(2.5, 6.0);
-    return rand(6.0, 25.0);
+// === Win feed with time tracking ===
+var winFeed=[];
+function renderWins(){
+  var c=document.getElementById('lastWins');c.innerHTML='';
+  for(var i=0;i<winFeed.length;i++){
+    var w=winFeed[i];var el=document.createElement('div');el.className='win-entry';
+    if(i>0)el.style.animation='none';
+    el.innerHTML='<span class="win-user">\uD83D\uDC64 '+w.name+'<span class="win-time">'+fmtMins(w.mins)+'</span></span><span class="win-amount">+$'+w.amount+'</span>';
+    c.appendChild(el);
   }
+}
+function initWins(){
+  var times=[1,3,6,11];
+  for(var i=0;i<times.length;i++)winFeed.push({name:genUsername(),amount:genAmount(),mins:times[i]});
+  renderWins();
+  setInterval(function(){for(var i=0;i<winFeed.length;i++)winFeed[i].mins++;renderWins();},60000);
+  (function addW(){setTimeout(function(){winFeed.unshift({name:genUsername(),amount:genAmount(),mins:0});while(winFeed.length>5)winFeed.pop();renderWins();addW();},ri(25000,50000));})();
+}
 
-  function genUsername() {
-    const names = ['Alex','Maria','Дмитрий','Анна','John','Pedro','Ahmed','Олег','Иван','Sara','Mike','Карина','Артём','Лена','Tom','Max','Nikita','Влад','Рустам','Ali'];
-    const name = names[randInt(0, names.length - 1)];
-    return name.slice(0, randInt(2, 4)) + '***';
-  }
-
-  // ===== Init stats =====
-  function initStats() {
-    document.getElementById('todayEarnings').textContent = '$' + randInt(8000, 18000).toLocaleString();
-    document.getElementById('winRate').textContent = randInt(87, 94) + '%';
-
-    // Periodically update
-    setInterval(() => {
-      const el = document.getElementById('todayEarnings');
-      let v = parseInt(el.textContent.replace(/[$,]/g, ''));
-      v += randInt(10, 80);
-      el.textContent = '$' + v.toLocaleString();
-    }, 3000);
-  }
-
-  // ===== History bar =====
-  function initHistory() {
-    const bar = document.getElementById('historyBar');
-    for (let i = 0; i < 15; i++) {
-      const c = genCoeff();
-      const chip = document.createElement('div');
-      chip.className = 'history-chip' + (c >= 5 ? ' mega' : c >= 2.5 ? ' high' : '');
-      chip.textContent = c.toFixed(2) + 'x';
-      bar.appendChild(chip);
-    }
-  }
-
-  // ===== Last wins =====
-  function addFakeWin() {
-    const container = document.getElementById('lastWins');
-    const amount = rand(5, 500).toFixed(0);
-    const entry = document.createElement('div');
-    entry.className = 'win-entry';
-    entry.innerHTML = `
-      <span class="win-user">👤 ${genUsername()}</span>
-      <span class="win-amount">+$${amount}</span>
-    `;
-    container.insertBefore(entry, container.firstChild);
-    if (container.children.length > 5) container.removeChild(container.lastChild);
-  }
-
-  function initLastWins() {
-    for (let i = 0; i < 4; i++) addFakeWin();
-    setInterval(addFakeWin, randInt(4000, 8000));
-  }
-
-  // ===== Get signal =====
-  function getSignal() {
-    if (signalActive) return;
-    const btn = document.getElementById('btnSignal');
-    const coeff = document.getElementById('signalCoeff');
-    const hint = document.getElementById('signalHint');
-    const confFill = document.getElementById('confFill');
-    const confPct = document.getElementById('confPct');
-    const resultBlock = document.getElementById('resultBlock');
-
-    btn.classList.add('loading');
-    btn.disabled = true;
-    coeff.classList.remove('visible');
-    resultBlock.classList.remove('visible');
-
-    // Simulate analysis
-    setTimeout(() => {
-      const c = genCoeff();
-      const confidence = randInt(78, 96);
-
-      coeff.textContent = 'x' + c.toFixed(2);
-      coeff.classList.add('visible');
-      confFill.style.width = confidence + '%';
-      confPct.textContent = confidence + '%';
-      hint.innerHTML = 'Ставь и забирай на <strong>x' + c.toFixed(2) + '</strong>';
-
-      btn.classList.remove('loading');
-      btn.disabled = false;
-      signalActive = true;
-
-      // Show result buttons
-      setTimeout(() => {
-        resultBlock.classList.add('visible');
-      }, 500);
-
-      // Add to history
-      const bar = document.getElementById('historyBar');
-      const chip = document.createElement('div');
-      chip.className = 'history-chip' + (c >= 5 ? ' mega' : c >= 2.5 ? ' high' : '');
-      chip.textContent = c.toFixed(2) + 'x';
-      bar.insertBefore(chip, bar.firstChild);
-      if (bar.children.length > 20) bar.removeChild(bar.lastChild);
-
-    }, randInt(1500, 2500));
-  }
-
-  // ===== Record result =====
-  function recordResult(won) {
-    signalActive = false;
-    const resultBlock = document.getElementById('resultBlock');
-    const streakBar = document.getElementById('streakBar');
-    const streakCount = document.getElementById('streakCount');
-    const streakIcons = document.getElementById('streakIcons');
-
-    resultBlock.classList.remove('visible');
-
-    if (won) {
-      streak++;
-      // Bias toward wins in display (always show high streak)
-      if (Math.random() < 0.3) streak = Math.max(streak, randInt(3, 7));
-    } else {
-      streak = 0;
-    }
-
-    results.push(won);
-    if (results.length > 10) results.shift();
-
-    // Update streak bar
-    streakBar.classList.add('visible');
-    streakCount.textContent = streak;
-
-    streakIcons.innerHTML = '';
-    const show = results.slice(-8);
-    show.forEach(w => {
-      const dot = document.createElement('div');
-      dot.className = 'streak-dot ' + (w ? 'win' : 'lose');
-      streakIcons.appendChild(dot);
-    });
-
-    // Update hint
-    const hint = document.getElementById('signalHint'); //bb
-    if (won) {
-      hint.innerHTML = '🎉 <strong>Отлично!</strong> Серия побед: ' + streak;
-    } else {
-      hint.innerHTML = '💡 Удвой ставку (x2) для покрытия';
-    }
-  }
-
-  // ===== Init =====
-  initStats();
-  initHistory();
-  initLastWins();
+function initStats(){
+  var earn=getDayEarnings();
+  document.getElementById('todayEarnings').textContent='$'+earn.toLocaleString();
+  document.getElementById('winRate').textContent=ri(88,93)+'%';
+  (function tE(){setTimeout(function(){var el=document.getElementById('todayEarnings');var v=parseInt(el.textContent.replace(/[$,]/g,''));el.textContent='$'+(v+ri(2,8)).toLocaleString();tE();},ri(25000,55000));})();
+}
+function initHistory(){
+  var bar=document.getElementById('historyBar');
+  for(var i=0;i<15;i++){var c=genCoeff();var ch=document.createElement('div');ch.className='history-chip'+(c>=7?' mega':c>=3?' high':'');ch.textContent=c.toFixed(2)+'x';bar.appendChild(ch);}
+}
+function getSignal(){
+  if(signalActive)return;
+  var btn=document.getElementById('btnSignal'),coeff=document.getElementById('signalCoeff'),hint=document.getElementById('signalHint'),cF=document.getElementById('confFill'),cP=document.getElementById('confPct'),rb=document.getElementById('resultBlock');
+  btn.classList.add('loading');btn.disabled=true;coeff.classList.remove('visible');rb.classList.remove('visible');
+  setTimeout(function(){
+    var c=genCoeff(),conf;if(c<2)conf=ri(88,96);else if(c<3.5)conf=ri(82,92);else if(c<6)conf=ri(74,86);else conf=ri(65,78);
+    coeff.textContent='x'+c.toFixed(2);coeff.classList.add('visible');
+    cF.style.width=conf+'%';cP.textContent=conf+'%';
+    hint.innerHTML='Ставь и забирай на <strong>x'+c.toFixed(2)+'</strong>';
+    btn.classList.remove('loading');btn.disabled=false;signalActive=true;
+    setTimeout(function(){rb.classList.add('visible');},500);
+    var bar=document.getElementById('historyBar'),ch=document.createElement('div');
+    ch.className='history-chip'+(c>=7?' mega':c>=3?' high':'');ch.textContent=c.toFixed(2)+'x';
+    bar.insertBefore(ch,bar.firstChild);if(bar.children.length>20)bar.removeChild(bar.lastChild);
+  },ri(1500,2500));
+}
+function recordResult(won){
+  signalActive=false;
+  document.getElementById('resultBlock').classList.remove('visible');
+  if(won){streak++;if(Math.random()<0.3)streak=Math.max(streak,ri(3,7));}else{streak=0;}
+  results.push(won);if(results.length>10)results.shift();
+  var sb=document.getElementById('streakBar');sb.classList.add('visible');
+  document.getElementById('streakCount').textContent=streak;
+  var si=document.getElementById('streakIcons');si.innerHTML='';
+  var show=results.slice(-8);for(var i=0;i<show.length;i++){var d=document.createElement('div');d.className='streak-dot '+(show[i]?'win':'lose');si.appendChild(d);}
+  var hint=document.getElementById('signalHint');
+  hint.innerHTML=won?'\uD83C\uDF89 <strong>Отлично!</strong> Серия побед: '+streak:'\uD83D\uDCA1 Удвой ставку (x2) для покрытия';
+}
+initStats();initHistory();initWins();
 </script>
 </body>
 </html>
