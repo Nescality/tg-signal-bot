@@ -419,10 +419,6 @@
       <div class="stat-label">Заработано сегодня</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value gold" id="onlineCount">0</div>
-      <div class="stat-label">Онлайн</div>
-    </div>
-    <div class="stat-item">
       <div class="stat-value" id="winRate">0%</div>
       <div class="stat-label">Винрейт</div>
     </div>
@@ -494,18 +490,10 @@
 
   // ===== Init stats =====
   function initStats() {
-    document.getElementById('todayEarnings').textContent = '$' + randInt(8000, 18000).toLocaleString(); //dollar
-    document.getElementById('onlineCount').textContent = randInt(1200, 3400).toLocaleString();
+    document.getElementById('todayEarnings').textContent = '$' + randInt(8000, 18000).toLocaleString();
     document.getElementById('winRate').textContent = randInt(87, 94) + '%';
 
     // Periodically update
-    setInterval(() => {
-      const el = document.getElementById('onlineCount');
-      let v = parseInt(el.textContent.replace(/,/g, ''));
-      v += randInt(-15, 20);
-      el.textContent = v.toLocaleString();
-    }, 5000);
-
     setInterval(() => {
       const el = document.getElementById('todayEarnings');
       let v = parseInt(el.textContent.replace(/[$,]/g, ''));
@@ -542,7 +530,7 @@
 
   function initLastWins() {
     for (let i = 0; i < 4; i++) addFakeWin();
-    setInterval(addFakeWin, randInt(4000, 8000)); //bb
+    setInterval(addFakeWin, randInt(4000, 8000));
   }
 
   // ===== Get signal =====
