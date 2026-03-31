@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Lucky Jet — Signal</title>
+<title>Lucky Jet — Safe Signals</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=JetBrains+Mono:wght@700&display=swap');
 
@@ -186,31 +186,25 @@
     }
   }
 
-  // НОВАЯ МАТЕМАТИЧЕСКАЯ ФОРМУЛА
+  // БЕЗОПАСНАЯ ВЫЧИСЛИТЕЛЬНАЯ ФОРМУЛА (Safe Profit)
   function getRealisticCoeff() {
-    const rand = Math.random();
-    // Формула: 99 / (100 - X), имитирующая реальный алгоритм краш-игр
-    // Добавляем дополнительные условия для баланса "адекватности"
-    let result = 0.99 / (1 - rand);
-    
-    // Ограничиваем минимальный и максимальный порог для сигналов
-    if (result < 1.10) result = 1.10 + (Math.random() * 0.2);
-    
-    // Шансы на распределение (чтобы лента выглядела как на 1win):
     const chance = Math.random() * 100;
     
-    if (chance < 50) { 
-      // 50% — коэффициенты 1.1 - 1.9 (лоу-риск)
-      return Math.random() * (1.9 - 1.1) + 1.1;
-    } else if (chance < 80) {
-      // 30% — коэффициенты 2.0 - 4.5 (медиум)
-      return Math.random() * (4.5 - 2.0) + 2.0;
-    } else if (chance < 95) {
-      // 15% — коэффициенты 4.6 - 10.0 (хай-риск)
-      return Math.random() * (10.0 - 4.6) + 4.6;
-    } else {
-      // 5% — редкие заносы выше 10.0
-      return Math.random() * (25.0 - 10.0) + 10.0;
+    // 70% ШАНС: Безопасный профит (самые частые выигрыши)
+    if (chance < 70) {
+      return Math.random() * (2.10 - 1.25) + 1.25; 
+    } 
+    // 20% ШАНС: Умеренный риск
+    else if (chance < 90) {
+      return Math.random() * (3.80 - 2.11) + 2.11;
+    } 
+    // 7% ШАНС: Хороший множитель
+    else if (chance < 97) {
+      return Math.random() * (6.50 - 3.81) + 3.81;
+    } 
+    // 3% ШАНС: Редкая ракета (ограничена 15х для безопасности)
+    else {
+      return Math.random() * (15.00 - 6.51) + 6.51;
     }
   }
 
@@ -228,12 +222,12 @@
     coeff.classList.remove('visible'); rb.classList.remove('visible');
     label.textContent = 'Анализируем...';
 
-    // Случайная задержка "анализа" для солидности
-    const delay = Math.floor(Math.random() * (2500 - 1500 + 1)) + 1500;
+    const delay = Math.floor(Math.random() * (2200 - 1400 + 1)) + 1400;
 
     setTimeout(() => {
       const c = getRealisticCoeff(); 
-      const confidence = Math.floor(Math.random() * (98 - 89 + 1)) + 89;
+      // Процент уверенности теперь зависит от величины икса: чем меньше икс, тем выше точность
+      const confidence = c < 2 ? Math.floor(Math.random() * (99 - 95 + 1)) + 95 : Math.floor(Math.random() * (94 - 88 + 1)) + 88;
       const cFixed = c.toFixed(2);
 
       coeff.textContent = 'x' + cFixed;
@@ -250,10 +244,9 @@
       signalActive = true;
       setTimeout(() => rb.classList.add('visible'), 400);
 
-      // Обновление истории
       const bar = document.getElementById('historyBar'), chip = document.createElement('div');
       let type = '';
-      if (c >= 10) type = ' mega';
+      if (c >= 6) type = ' mega';
       else if (c >= 2) type = ' high';
       
       chip.className = 'history-chip' + type;
