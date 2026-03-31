@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Lucky Jet — Signal</title>
+<title>Lucky Jet — Auto Signal</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=JetBrains+Mono:wght@700&display=swap');
 
@@ -65,7 +65,7 @@
     padding-bottom: 4px; 
     scrollbar-width: none; 
     min-height: 32px;
-    justify-content: center;
+    justify-content: flex-start;
   }
   .history-bar::-webkit-scrollbar { display: none; }
   .history-chip { flex-shrink: 0; padding: 6px 12px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; background: var(--surface2); color: var(--text-dim); border: 1px solid transparent; animation: slideIn 0.3s ease-out; }
@@ -84,15 +84,17 @@
     overflow: hidden; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   }
+  .signal-card.waiting::before { display: none; }
   .signal-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent 0deg, rgba(168,85,247,0.08) 60deg, transparent 120deg); animation: rotate-bg 8s linear infinite; pointer-events: none; }
   @keyframes rotate-bg { to { transform: rotate(360deg); } }
   .signal-card > * { position: relative; z-index: 1; }
   
-  .signal-label { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+  .signal-label { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; transition: color 0.3s; }
   .signal-coeff { font-family: 'JetBrains Mono', monospace; font-size: 64px; font-weight: 700; color: var(--accent-glow); text-shadow: 0 0 40px rgba(168,85,247,0.4); line-height: 1; margin-bottom: 10px; opacity: 0; transform: scale(0.5); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
   .signal-coeff.visible { opacity: 1; transform: scale(1); }
   
-  .confidence { display: flex; align-items: center; gap: 10px; margin-top: 15px; padding: 0 10px; }
+  .confidence { display: flex; align-items: center; gap: 10px; margin-top: 15px; padding: 0 10px; opacity: 0; transition: opacity 0.3s; }
+  .confidence.visible { opacity: 1; }
   .confidence-bar-bg { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
   .confidence-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--green), var(--green-glow)); width: 0%; transition: width 1s ease; }
   .confidence-pct { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--green); min-width: 40px; text-align: right; }
@@ -100,34 +102,39 @@
   .signal-hint { font-size: 14px; color: var(--text-dim); margin-top: 16px; }
   .signal-hint strong { color: var(--green); }
 
-  /* Блок результата */
-  .result-block { display: none; gap: 12px; margin-bottom: 16px; }
-  .result-block.visible { display: flex; }
-  .result-btn { flex: 1; padding: 16px; border: none; border-radius: 16px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .result-btn:active { transform: scale(0.96); }
-  .result-btn.win { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
-  .result-btn.lose { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+  /* Статус реальной игры */
+  .live-status-block {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .live-indicator {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 8px var(--red);
+  }
+  .dot.active { background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 1s infinite; }
+  .live-coeff {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+  }
 
-  /* Серия */
-  .streak-bar { background: var(--surface); border: 1px solid rgba(168,85,247,0.1); border-radius: 16px; padding: 12px 20px; margin-bottom: 16px; display: none; align-items: center; justify-content: space-between; }
-  .streak-bar.visible { display: flex; }
-  .streak-text { font-size: 14px; color: var(--text-dim); }
-  .streak-text strong { color: var(--green); font-family: 'JetBrains Mono', monospace; }
-  .streak-icons { display: flex; gap: 5px; }
-  .streak-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface2); }
-  .streak-dot.win { background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,0.4); }
-  .streak-dot.lose { background: var(--red); }
-
-  /* Главная кнопка */
-  .btn-signal { width: 100%; padding: 20px; border: none; border-radius: 20px; font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), #7c3aed); box-shadow: 0 8px 25px rgba(168,85,247,0.3); transition: all 0.25s; text-transform: uppercase; letter-spacing: 1.5px; }
-  .btn-signal:active { transform: translateY(2px); box-shadow: 0 4px 15px rgba(168,85,247,0.3); }
-  .btn-signal:disabled { opacity: 0.6; cursor: not-allowed; }
-  
-  .btn-signal .loader { display: none; width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
-  .btn-signal.loading .loader { display: inline-block; }
-  .btn-signal.loading .btn-text { display: none; }
-  
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
   @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 </style>
 </head>
@@ -140,133 +147,191 @@
 
   <div class="history-bar" id="historyBar"></div>
 
-  <div class="signal-card">
-    <div class="signal-label">Сигнал — ожидание</div>
+  <div class="signal-card waiting" id="signalCard">
+    <div class="signal-label" id="signalLabel">Подключение к серверу...</div>
     <div class="signal-coeff" id="signalCoeff">—</div>
-    <div class="confidence">
+    
+    <div class="confidence" id="confidenceBlock">
       <div class="confidence-bar-bg"><div class="confidence-bar-fill" id="confFill"></div></div>
       <div class="confidence-pct" id="confPct">0%</div>
     </div>
-    <div class="signal-hint" id="signalHint">Нажми кнопку для получения сигнала</div>
+    
+    <div class="signal-hint" id="signalHint">Ожидание данных игры</div>
   </div>
 
-  <div class="result-block" id="resultBlock">
-    <button class="result-btn win" onclick="recordResult(true)">✅ Выиграл</button>
-    <button class="result-btn lose" onclick="recordResult(false)">❌ Проиграл</button>
+  <div class="live-status-block">
+    <div class="live-indicator">
+      <div class="dot" id="liveDot"></div>
+      <span id="liveText">Оффлайн</span>
+    </div>
+    <div class="live-coeff" id="liveCoeff">x1.00</div>
   </div>
 
-  <div class="streak-bar" id="streakBar">
-    <div class="streak-text">Серия побед: <strong id="streakCount">0</strong></div>
-    <div class="streak-icons" id="streakIcons"></div>
-  </div>
-
-  <button class="btn-signal" id="btnSignal" onclick="getSignal()">
-    <span class="btn-text">🚀 Получить сигнал</span>
-    <span class="loader"></span>
-  </button>
 </div>
 
 <script>
-  let streak = 0, results = [], signalActive = false;
-  const rand = (min, max) => Math.random() * (max - min) + min;
-  const randInt = (min, max) => Math.floor(rand(min, max + 1));
+  // --- НАСТРОЙКИ ---
+  // Вставь свой токен и название канала, которые ты нашел в консоли разработчика
+  const WS_URL = 'wss://crash-gateway-grm-cr.gamedev-tech.cc/websocket/secondary';
+  const AUTH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzUxODg3MTQsImlhdCI6MTc3NDkyOTUxNCwic3ViIjoiNDI0Mjc0MzEiLCJjaGFubmVscyI6WyJsdWNreS1qZXQtOTQiXX0.olNuIsRg0-UUK0vHlCO1LmmDN7YWcysICr7HgJf1lpI'; 
+  const CHANNEL_NAME = 'lucky-jet-94'; // Замени, если на скрине был другой номер (например lucky-jet-95)
 
-  function initApp() {
-    const coeffEl = document.getElementById('signalCoeff');
-    const confFill = document.getElementById('confFill');
-    const confPct = document.getElementById('confPct');
-    const hintEl = document.getElementById('signalHint');
-    const labelEl = document.querySelector('.signal-label');
+  // Элементы UI (Прогноз)
+  const signalCard = document.getElementById('signalCard');
+  const labelEl = document.getElementById('signalLabel');
+  const coeffEl = document.getElementById('signalCoeff');
+  const confBlock = document.getElementById('confidenceBlock');
+  const confFill = document.getElementById('confFill');
+  const confPct = document.getElementById('confPct');
+  const hintEl = document.getElementById('signalHint');
+  const historyBar = document.getElementById('historyBar');
 
-    // Восстановление последнего сигнала
-    let lastCoeff = localStorage.getItem('lj_last_coeff');
-    let lastConf = localStorage.getItem('lj_last_conf');
+  // Элементы UI (Реальная игра)
+  const liveDot = document.getElementById('liveDot');
+  const liveText = document.getElementById('liveText');
+  const liveCoeff = document.getElementById('liveCoeff');
 
-    if (lastCoeff && lastConf) {
-      coeffEl.textContent = 'x' + lastCoeff;
-      coeffEl.classList.add('visible');
-      confFill.style.width = lastConf + '%';
-      confPct.textContent = lastConf + '%';
-      labelEl.textContent = 'Сигнал получен';
-      hintEl.innerHTML = 'Забирай на <strong>x' + lastCoeff + '</strong>';
-      document.getElementById('resultBlock').classList.add('visible');
-      signalActive = true;
-    }
-  }
+  let isRoundActive = false;
+  let ws;
 
+  // Генерация фейкового прогноза
   function getRealisticCoeff() {
     const chance = Math.random() * 100;
-    if (chance < 25) return rand(1.10, 1.50);
-    if (chance < 65) return rand(1.51, 3.00);
-    if (chance < 90) return rand(3.01, 10.00);
-    return rand(10.01, 30.00);
+    if (chance < 25) return (Math.random() * (1.50 - 1.10) + 1.10).toFixed(2);
+    if (chance < 65) return (Math.random() * (3.00 - 1.51) + 1.51).toFixed(2);
+    if (chance < 90) return (Math.random() * (10.00 - 3.01) + 3.01).toFixed(2);
+    return (Math.random() * (30.00 - 10.01) + 10.01).toFixed(2);
   }
 
-  function getSignal() {
-    if (signalActive) return;
-    const btn = document.getElementById('btnSignal'), 
-          coeff = document.getElementById('signalCoeff'), 
-          cf = document.getElementById('confFill'), 
-          cp = document.getElementById('confPct'), 
-          rb = document.getElementById('resultBlock'),
-          label = document.querySelector('.signal-label');
+  function addHistoryChip(multiplier) {
+    const num = parseFloat(multiplier);
+    const chip = document.createElement('div');
+    chip.className = 'history-chip' + (num >= 10 ? ' mega' : num >= 2 ? ' high' : '');
+    chip.textContent = num.toFixed(2) + 'x';
+    historyBar.insertBefore(chip, historyBar.firstChild);
+    if (historyBar.children.length > 15) historyBar.removeChild(historyBar.lastChild);
+  }
 
-    btn.classList.add('loading'); btn.disabled = true;
-    coeff.classList.remove('visible'); rb.classList.remove('visible');
-    label.textContent = 'Анализируем...';
+  // Запуск интерфейса начала раунда
+  function startRoundSignal() {
+    isRoundActive = true;
+    signalCard.classList.remove('waiting');
+    
+    // Генерируем прогноз
+    const forecastedCoeff = getRealisticCoeff();
+    const confidence = Math.floor(Math.random() * (99 - 88 + 1)) + 88;
 
-    setTimeout(() => {
-      const c = getRealisticCoeff(); 
-      const confidence = randInt(88, 99);
-      const cFixed = c.toFixed(2);
+    labelEl.textContent = 'Успешный анализ';
+    labelEl.style.color = 'var(--green)';
+    
+    coeffEl.textContent = 'x' + forecastedCoeff;
+    coeffEl.classList.add('visible');
+    
+    confBlock.classList.add('visible');
+    confFill.style.width = confidence + '%';
+    confPct.textContent = confidence + '%';
+    
+    hintEl.innerHTML = 'Забирай на <strong>x' + forecastedCoeff + '</strong>';
 
-      coeff.textContent = 'x' + cFixed;
-      coeff.classList.add('visible');
-      cf.style.width = confidence + '%';
-      cp.textContent = confidence + '%';
-      label.textContent = 'Сигнал получен';
-      document.getElementById('signalHint').innerHTML = 'Забирай на <strong>x' + cFixed + '</strong>';
+    // Обновляем статус реальной игры
+    liveDot.classList.add('active');
+    liveText.textContent = 'Раунд идет';
+  }
+
+  // Завершение раунда (краш)
+  function endRoundSignal(crashedAt) {
+    isRoundActive = false;
+    signalCard.classList.add('waiting');
+    
+    labelEl.textContent = 'Ожидание начала раунда';
+    labelEl.style.color = 'var(--text-dim)';
+    
+    coeffEl.classList.remove('visible');
+    confBlock.classList.remove('visible');
+    hintEl.innerHTML = 'Анализ начнется автоматически...';
+
+    // Заносим реальный икс в историю
+    if (crashedAt) {
+      addHistoryChip(crashedAt);
+    }
+
+    // Обновляем статус реальной игры
+    liveDot.classList.remove('active');
+    liveText.textContent = 'Игра завершена (Краш)';
+    liveCoeff.style.color = 'var(--red)';
+  }
+
+  // --- ЛОГИКА WEBSOCKET ---
+  function connectWebSocket() {
+    ws = new WebSocket(WS_URL);
+
+    ws.onopen = () => {
+      console.log('Подключено к серверу!');
+      labelEl.textContent = 'Синхронизация данных...';
       
-      localStorage.setItem('lj_last_coeff', cFixed);
-      localStorage.setItem('lj_last_conf', confidence);
+      // 1. Отправляем токен для авторизации
+      ws.send(JSON.stringify({
+        connect: { token: AUTH_TOKEN },
+        id: 1
+      }));
 
-      btn.classList.remove('loading'); btn.disabled = false;
-      signalActive = true;
-      setTimeout(() => rb.classList.add('visible'), 400);
+      // 2. Через секунду подписываемся на канал с игрой
+      setTimeout(() => {
+        ws.send(JSON.stringify({
+          id: 2,
+          subscribe: { channel: CHANNEL_NAME }
+        }));
+        labelEl.textContent = 'Ожидание начала раунда';
+        liveText.textContent = 'Ожидание игры...';
+      }, 1000);
+    };
 
-      // Добавляем в историю
-      const bar = document.getElementById('historyBar'), chip = document.createElement('div');
-      chip.className = 'history-chip' + (c >= 10 ? ' mega' : c >= 2 ? ' high' : '');
-      chip.textContent = cFixed + 'x';
-      bar.insertBefore(chip, bar.firstChild);
-      if (bar.children.length > 10) bar.removeChild(bar.lastChild);
-    }, randInt(1500, 2500));
+    ws.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data);
+
+        // Ищем пуши с данными
+        if (message.push && message.push.pub && message.push.pub.data) {
+          const gameData = message.push.pub.data;
+
+          // Событие: Изменение коэффициента (ракета летит)
+          if (gameData.eventType === "changeCoefficient") {
+            const currentLiveMultiplier = gameData.next[0];
+            
+            // Если раунд еще не отмечен как активный, запускаем сигнал
+            if (!isRoundActive) {
+              startRoundSignal();
+              liveCoeff.style.color = '#fff';
+            }
+
+            // Обновляем цифру реального полета внизу
+            liveCoeff.textContent = 'x' + parseFloat(currentLiveMultiplier).toFixed(2);
+          }
+
+          // Событие: Конец раунда (краш)
+          // Примечание: название eventType может быть "roundFinished" или "crash". 
+          // Если оно отличается, поправь строку ниже.
+          if (gameData.eventType === "roundFinished" || gameData.eventType === "crash") {
+            const finalMultiplier = liveCoeff.textContent.replace('x', ''); // Берем последнее значение с экрана
+            endRoundSignal(finalMultiplier);
+          }
+        }
+      } catch (e) {
+        console.error("Ошибка обработки пакета:", e);
+      }
+    };
+
+    ws.onclose = () => {
+      liveText.textContent = 'Соединение потеряно, переподключение...';
+      liveDot.classList.remove('active');
+      setTimeout(connectWebSocket, 3000); // Авто-реконнект
+    };
   }
 
-  function recordResult(won) {
-    signalActive = false;
-    localStorage.removeItem('lj_last_coeff');
-    localStorage.removeItem('lj_last_conf');
-
-    document.getElementById('resultBlock').classList.remove('visible');
-    document.querySelector('.signal-label').textContent = 'Сигнал — ожидание';
-    document.getElementById('signalHint').textContent = 'Нажми кнопку для получения сигнала';
-    
-    if (won) streak++; else streak = 0;
-    results.push(won); if (results.length > 10) results.shift();
-
-    const sb = document.getElementById('streakBar');
-    sb.classList.add('visible');
-    document.getElementById('streakCount').textContent = streak;
-    
-    const si = document.getElementById('streakIcons'); si.innerHTML = '';
-    results.forEach(w => {
-      const d = document.createElement('div'); d.className = 'streak-dot ' + (w ? 'win' : 'lose');
-      si.appendChild(d);
-    });
-  }
-
-  initApp();
+  // Запускаем подключение при загрузке страницы
+  window.onload = () => {
+    connectWebSocket();
+  };
 </script>
 </body>
 </html>
