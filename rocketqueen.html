@@ -1,50 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Rocket Queen — Signal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=JetBrains+Mono:wght@700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #1a1025;
+    --surface: #241a35;
+    --surface2: #2e2245;
+    --accent: #f59e0b;
+    --accent-glow: #fbbf24;
+    --pink: #ec4899;
+    --green: #22c55e;
+    --red: #ef4444;
+    --text: #f5f0ff;
+    --text-dim: #9b8fba;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 50% 20%, rgba(245,158,11,0.1) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 400px at 30% 80%, rgba(236,72,153,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    padding: 16px;
+  }
+
+  .header { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+  .logo { font-size: 24px; font-weight: 900; background: linear-gradient(135deg, var(--accent), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+  .history-bar { 
+    display: flex; 
+    gap: 6px; 
+    margin-bottom: 16px; 
+    overflow-x: auto; 
+    padding-bottom: 4px; 
+    scrollbar-width: none; 
+    min-height: 32px;
+    justify-content: center;
+  }
+  .history-bar::-webkit-scrollbar { display: none; }
+  .history-chip { flex-shrink: 0; padding: 6px 12px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; background: var(--surface2); color: var(--text-dim); border: 1px solid transparent; animation: slideInX 0.3s ease-out; }
+  .history-chip.high { background: rgba(245,158,11,0.2); color: var(--accent-glow); border-color: rgba(245,158,11,0.3); }
+  .history-chip.mega { background: rgba(236,72,153,0.15); color: var(--pink); border-color: rgba(236,72,153,0.3); }
+
+  .signal-card {
+    background: var(--surface); border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 24px; padding: 32px 24px; text-align: center; margin-bottom: 16px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  .signal-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent 0deg, rgba(245,158,11,0.08) 60deg, transparent 120deg); animation: rotate-bg 8s linear infinite; pointer-events: none; }
+  @keyframes rotate-bg { to { transform: rotate(360deg); } }
+  .signal-card > * { position: relative; z-index: 1; }
+
+  .signal-label { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .signal-coeff { font-family: 'JetBrains Mono', monospace; font-size: 64px; font-weight: 700; color: var(--accent-glow); text-shadow: 0 0 40px rgba(245,158,11,0.4); line-height: 1; margin-bottom: 10px; opacity: 0; transform: scale(0.5); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .signal-coeff.visible { opacity: 1; transform: scale(1); }
+
+  .confidence { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 0 10px; }
+  .confidence-bar-bg { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .confidence-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--pink)); width: 0%; transition: width 1s ease; }
+  .confidence-pct { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--accent); min-width: 40px; text-align: right; }
+  
+  .signal-hint { font-size: 14px; color: var(--text-dim); margin-top: 16px; }
+  .signal-hint strong { color: var(--green); }
+
+  .result-block { display: none; gap: 12px; margin-bottom: 16px; }
+  .result-block.visible { display: flex; }
+  .result-btn { flex: 1; padding: 16px; border: none; border-radius: 16px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .result-btn:active { transform: scale(0.96); }
+  .result-btn.win { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+  .result-btn.lose { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+
+  .streak-bar { background: var(--surface); border: 1px solid rgba(34,197,94,0.1); border-radius: 16px; padding: 12px 20px; margin-bottom: 16px; display: none; align-items: center; justify-content: space-between; }
+  .streak-bar.visible { display: flex; }
+  .streak-text { font-size: 14px; color: var(--text-dim); }
+  .streak-text strong { color: var(--green); font-family: 'JetBrains Mono', monospace; }
+  .streak-icons { display: flex; gap: 5px; }
+  .streak-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface2); }
+  .streak-dot.win { background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,0.4); }
+  .streak-dot.lose { background: var(--red); }
+
+  .btn-signal { width: 100%; padding: 20px; border: none; border-radius: 20px; font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; color: #1a1025; background: linear-gradient(135deg, var(--accent), var(--pink)); box-shadow: 0 8px 25px rgba(245,158,11,0.3); transition: all 0.25s; text-transform: uppercase; letter-spacing: 1.5px; }
+  .btn-signal:active { transform: translateY(2px); }
+  .btn-signal:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-signal .loader { display: none; width: 22px; height: 22px; border: 3px solid rgba(26,16,37,0.3); border-top-color: #1a1025; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .btn-signal.loading .loader { display: inline-block; }
+  .btn-signal.loading .btn-text { display: none; }
+  
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes slideInX { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="logo">ROCKET QUEEN</div>
+  </div>
+
+  <div class="history-bar" id="historyBar"></div>
+
+  <div class="signal-card">
+    <div class="signal-label">Ожидание сигнала</div>
+    <div class="signal-coeff" id="signalCoeff">—</div>
+    <div class="confidence">
+      <div class="confidence-bar-bg"><div class="confidence-bar-fill" id="confFill"></div></div>
+      <div class="confidence-pct" id="confPct">0%</div>
+    </div>
+    <div class="signal-hint" id="signalHint">Нажми кнопку для получения сигнала</div>
+  </div>
+
+  <div class="result-block" id="resultBlock">
+    <button class="result-btn win" onclick="recordResult(true)">✅ Выиграл</button>
+    <button class="result-btn lose" onclick="recordResult(false)">❌ Проиграл</button>
+  </div>
+
+  <div class="streak-bar" id="streakBar">
+    <div class="streak-text">Серия побед: <strong id="streakCount">0</strong></div>
+    <div class="streak-icons" id="streakIcons"></div>
+  </div>
+
+  <button class="btn-signal" id="btnSignal" onclick="getSignal()">
+    <span class="btn-text">🚀 Получить сигнал</span>
+    <span class="loader"></span>
+  </button>
+</div>
+
 <script>
   let streak = 0, results = [], signalActive = false;
   const rand = (min, max) => Math.random() * (max - min) + min;
   const randInt = (min, max) => Math.floor(rand(min, max + 1));
 
-  // ОБНОВЛЕННАЯ БЕЗОПАСНАЯ ЛОГИКА ГЕНЕРАЦИИ
+  // Умная формула генерации (Safe Logic)
   function genCoeff() {
     const r = Math.random() * 100;
-    
-    // 70% ШАНС: Безопасная зона (от 1.20 до 2.30) — база для стабильных побед
-    if (r < 70) {
-      return rand(1.20, 2.30);
-    } 
-    // 20% ШАНС: Средний риск (от 2.31 до 4.50)
-    else if (r < 90) {
-      return rand(2.31, 4.50);
-    } 
-    // 7% ШАНС: Высокий множитель (от 4.51 до 8.00)
-    else if (r < 97) {
-      return rand(4.51, 8.00);
-    } 
-    // 3% ШАНС: Редкий "занос" (от 8.01 до 15.00) — ограничено для минимизации сливов
-    else {
-      return rand(8.01, 15.00);
-    }
+    // 70% - Низкие безопасные иксы (1.20 - 2.30)
+    if (r < 70) return rand(1.20, 2.30);
+    // 20% - Средние (2.31 - 4.50)
+    if (r < 90) return rand(2.31, 4.50);
+    // 7% - Высокие (4.51 - 8.00)
+    if (r < 97) return rand(4.51, 8.00);
+    // 3% - Редкие (8.01 - 15.00)
+    return rand(8.01, 15.00);
   }
 
   function initApp() {
-    const coeff = document.getElementById('signalCoeff'), 
-          cf = document.getElementById('confFill'), 
-          cp = document.getElementById('confPct'), 
-          rb = document.getElementById('resultBlock'),
-          label = document.querySelector('.signal-label'),
-          hint = document.getElementById('signalHint');
-
     const savedLastCoeff = localStorage.getItem('rq_last_coeff');
     const savedLastConf = localStorage.getItem('rq_last_conf');
-
     if (savedLastCoeff && savedLastConf) {
-      coeff.textContent = 'x' + savedLastCoeff;
-      coeff.classList.add('visible');
-      cf.style.width = savedLastConf + '%';
-      cp.textContent = savedLastConf + '%';
-      label.textContent = 'Сигнал получен';
-      hint.innerHTML = 'Забирай на <strong>x' + savedLastCoeff + '</strong>';
-      signalActive = true;
-      rb.classList.add('visible');
+      showSignalUI(savedLastCoeff, savedLastConf, false);
     }
   }
 
@@ -53,22 +183,21 @@
           cf = document.getElementById('confFill'), 
           cp = document.getElementById('confPct'), 
           rb = document.getElementById('resultBlock'),
-          label = document.querySelector('.signal-label'),
-          hint = document.getElementById('signalHint');
+          label = document.querySelector('.signal-label');
 
     coeff.textContent = 'x' + cValue;
     coeff.classList.add('visible');
     cf.style.width = confValue + '%';
     cp.textContent = confValue + '%';
     label.textContent = 'Сигнал получен';
-    hint.innerHTML = 'Забирай на <strong>x' + cValue + '</strong>';
+    document.getElementById('signalHint').innerHTML = 'Забирай на <strong>x' + cValue + '</strong>';
     signalActive = true;
     rb.classList.add('visible');
 
     if (addToHistory) {
       const bar = document.getElementById('historyBar'), chip = document.createElement('div');
       const cNum = parseFloat(cValue);
-      // Логика подсветки истории под новые иксы
+      // Цветовая индикация в истории
       chip.className = 'history-chip' + (cNum >= 8 ? ' mega' : cNum >= 2.3 ? ' high' : '');
       chip.textContent = cValue + 'x';
       bar.insertBefore(chip, bar.firstChild);
@@ -82,10 +211,9 @@
     btn.classList.add('loading'); btn.disabled = true;
     coeff.classList.remove('visible');
 
-    // Время "анализа" сделано чуть более случайным для реализма
     setTimeout(() => {
       const c = genCoeff();
-      // Точность выше для маленьких коэффициентов
+      // Точность выше для маленьких иксов
       const confidence = c < 2.5 ? randInt(94, 99) : randInt(87, 93);
       const cStr = c.toFixed(2);
       
@@ -121,3 +249,5 @@
 
   initApp();
 </script>
+</body>
+</html>
